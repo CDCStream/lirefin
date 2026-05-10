@@ -199,10 +199,15 @@ export async function authRoute(app: FastifyInstance) {
         }
       }
 
-      // ---- 3. Delete the auth.users row. The RPC records the email
-      // hash and runs the cascade in a single transaction.
+      // ---- 3a. Record the email hash so a re-signup with the same
+      // email gets 0 free credits. This is a narrow RPC that only
+      // touches our `deleted_users` table — it deliberately does NOT
+      // try to remove the auth.users row, because Supabase's auth
+      // schema has internal GoTrue protections that reject custom
+      // plpgsql delete attempts. The actual auth-side teardown is
+      // delegated to the admin API call right below.
       const { error: rpcErr } = await supabaseAdmin.rpc(
-        "delete_user_account",
+        "record_user_deletion",
         {
           p_user_id: user.id,
           p_had_paid: hadPaidSubscription,
@@ -211,12 +216,47 @@ export async function authRoute(app: FastifyInstance) {
 
       if (rpcErr) {
         app.log.error(
-          { err: rpcErr, userId: user.id },
-          "delete_user_account RPC failed",
+          {
+            err: rpcErr,
+            userId: user.id,
+            pgCode: (rpcErr as { code?: string }).code,
+            pgDetails: (rpcErr as { details?: string }).details,
+            pgHint: (rpcErr as { hint?: string }).hint,
+          },
+          "record_user_deletion RPC failed",
         );
         return reply.code(500).send({
           error: "Account deletion failed. Please try again.",
           code: "DELETE_FAILED",
+          stage: "record_deletion",
+          details: rpcErr.message,
+        });
+      }
+
+      // ---- 3b. Delete the auth.users row via Supabase's admin API.
+      // GoTrue cleans up sessions, identities, refresh tokens and MFA
+      // factors automatically; foreign keys on our public.* tables
+      // (all `on delete cascade`) wipe the rest in the same
+      // transaction Supabase opens internally.
+      const { error: authErr } = await supabaseAdmin.auth.admin.deleteUser(
+        user.id,
+      );
+
+      if (authErr) {
+        app.log.error(
+          {
+            err: authErr,
+            userId: user.id,
+            authCode: (authErr as { code?: string }).code,
+            authStatus: (authErr as { status?: number }).status,
+          },
+          "auth.admin.deleteUser failed",
+        );
+        return reply.code(500).send({
+          error: "Account deletion failed. Please try again.",
+          code: "DELETE_FAILED",
+          stage: "auth_admin_delete",
+          details: authErr.message,
         });
       }
 
