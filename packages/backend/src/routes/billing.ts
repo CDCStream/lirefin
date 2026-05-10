@@ -543,19 +543,46 @@ export async function billingRoute(app: FastifyInstance) {
     { config: { rawBody: true } },
     async (req, reply) => {
       const raw = req.body as Buffer;
+      const webhookId =
+        typeof req.headers["webhook-id"] === "string"
+          ? req.headers["webhook-id"]
+          : "?";
       let envelope: dodo.DodoWebhookEnvelope;
       try {
         envelope = dodo.verifyWebhook(raw, req.headers);
       } catch (err) {
-        const e = err as Error & { statusCode?: number };
-        app.log.warn({ err: e }, "dodo webhook verification failed");
+        const e = err as Error & { statusCode?: number; code?: string };
+        app.log.warn(
+          { err: e, code: e.code, webhookId, bodyLength: raw.length },
+          "dodo webhook verification failed",
+        );
         return reply.code(e.statusCode ?? 400).send({ error: e.message });
       }
+      app.log.info(
+        { webhookId, type: envelope.type },
+        "dodo webhook received",
+      );
       try {
         await handleDodoEvent(app, envelope);
       } catch (err) {
-        app.log.error({ err, type: envelope.type }, "dodo webhook handler failed");
-        return reply.code(500).send({ error: "handler failed" });
+        const e = err as Error & {
+          message?: string;
+          pgCode?: string;
+          pgDetails?: string;
+          pgHint?: string;
+        };
+        app.log.error(
+          {
+            err: e,
+            type: envelope.type,
+            webhookId,
+            pgCode: e.pgCode,
+            pgDetails: e.pgDetails,
+            pgHint: e.pgHint,
+          },
+          "dodo webhook handler failed",
+        );
+        return reply.code(500).send({ error: e.message ?? "handler failed" });
       }
       return reply.send({ received: true });
     },
@@ -710,7 +737,7 @@ async function upsertSubscriptionRow(
   userId: string,
   row: SubscriptionUpsert,
 ): Promise<void> {
-  await supabaseAdmin.from("subscriptions").upsert(
+  const { error } = await supabaseAdmin.from("subscriptions").upsert(
     {
       subscription_id: row.subscriptionId,
       customer_id: row.customerId,
@@ -729,6 +756,16 @@ async function upsertSubscriptionRow(
     },
     { onConflict: "subscription_id" },
   );
+  if (error) {
+    // Surface the actual failure (column name typos, missing migration,
+    // RLS issues) instead of silently swallowing it. The caller decides
+    // whether to fail loud (throw) or soft (log + continue).
+    throw Object.assign(new Error(`subscriptions upsert failed: ${error.message}`), {
+      pgCode: (error as { code?: string }).code,
+      pgDetails: (error as { details?: string }).details,
+      pgHint: (error as { hint?: string }).hint,
+    });
+  }
 }
 
 async function getDodoCustomerId(userId: string): Promise<string | null> {
@@ -853,15 +890,31 @@ async function handleDodoSubscriptionEvent(
     return;
   }
 
-  // Seed / refresh user → customer mapping.
-  await supabaseAdmin.from("billing_customers").upsert(
-    {
-      user_id: userId,
-      dodo_customer_id: customerId,
-      email: data.customer?.email ?? null,
-    },
-    { onConflict: "user_id" },
-  );
+  // Seed / refresh user → customer mapping. Same logging discipline as
+  // upsertSubscriptionRow: surface the real DB error so a missing
+  // migration / RLS misconfig is loud instead of silent.
+  const { error: bcErr } = await supabaseAdmin
+    .from("billing_customers")
+    .upsert(
+      {
+        user_id: userId,
+        dodo_customer_id: customerId,
+        email: data.customer?.email ?? null,
+      },
+      { onConflict: "user_id" },
+    );
+  if (bcErr) {
+    app.log.error(
+      {
+        err: bcErr,
+        pgCode: (bcErr as { code?: string }).code,
+        userId,
+        customerId,
+      },
+      "billing_customers upsert failed",
+    );
+    throw new Error(`billing_customers upsert failed: ${bcErr.message}`);
+  }
 
   await upsertSubscriptionRow(userId, {
     subscriptionId,
@@ -876,6 +929,17 @@ async function handleDodoSubscriptionEvent(
     canceledAt: data.cancelled_at ? new Date(data.cancelled_at) : null,
     provider: "dodo",
   });
+
+  app.log.info(
+    {
+      type: envelope.type,
+      subId: subscriptionId,
+      userId,
+      productId,
+      pkg: pkg.id,
+    },
+    "dodo subscription event processed",
+  );
 }
 
 async function handleDodoPaymentSucceeded(
