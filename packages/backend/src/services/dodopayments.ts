@@ -265,6 +265,51 @@ export async function createCustomerPortalUrl(input: {
 }
 
 /**
+ * Issue a full refund on a successful payment. Used by the account
+ * deletion flow when the user opts to also reverse the most recent
+ * charge.
+ *
+ * Dodo's refund API returns the new refund object; we don't need it for
+ * anything because the matching `payment.refunded` webhook will land
+ * separately and update our local rows. We swallow "already refunded"
+ * errors so this is idempotent if a retry slips through.
+ */
+export async function refundPayment(input: {
+  paymentId: string;
+  reason?: string;
+}): Promise<{ refunded: boolean; alreadyRefunded: boolean }> {
+  const dodo = dodoClient();
+  try {
+    await (
+      dodo.refunds as unknown as {
+        create: (args: {
+          payment_id: string;
+          reason?: string;
+        }) => Promise<unknown>;
+      }
+    ).create({
+      payment_id: input.paymentId,
+      ...(input.reason ? { reason: input.reason } : {}),
+    });
+    return { refunded: true, alreadyRefunded: false };
+  } catch (err) {
+    const e = err as { status?: number; message?: string; code?: string };
+    // Dodo returns a 4xx with a message containing "already" / "refunded"
+    // when the payment has already been (partially or fully) refunded.
+    // We treat that as a success state from the caller's POV.
+    const msg = (e.message ?? "").toLowerCase();
+    if (
+      e.status === 409 ||
+      msg.includes("already") ||
+      msg.includes("refunded")
+    ) {
+      return { refunded: false, alreadyRefunded: true };
+    }
+    throw err;
+  }
+}
+
+/**
  * Look up a discount by its public-facing redemption code (e.g.
  * `DEVTEST100`). Dodo exposes a dedicated `getByCode` endpoint that
  * returns the discount or 404s — much cleaner than Polar's list+filter.

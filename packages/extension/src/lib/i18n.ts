@@ -178,6 +178,27 @@ const en = {
     "We're putting the finishing touches on subscriptions. Until then, every account ships with 25 free credits — enjoy the analyses on us.",
   billingComingSoonHint:
     "We'll email you the moment they go live. No action needed.",
+  dangerZone: "Danger zone",
+  dangerZoneDescription:
+    "Permanently delete your account and everything tied to it.",
+  deleteAccount: "Delete account",
+  deleteAccountModalTitle: "Delete your account?",
+  deleteAccountModalLead:
+    "This is permanent and cannot be undone. We'll remove your account, portfolio, analysis history, and remaining credits.",
+  deleteAccountListSubscription:
+    "Your active {plan} subscription will be cancelled — no future charges.",
+  deleteAccountRefundOption: "Also refund my most recent charge",
+  deleteAccountRefundHint:
+    "Refunds typically settle in 5-10 business days.",
+  deleteAccountTypeDelete: "Type \"delete\" to confirm:",
+  deleteAccountSubmit: "Delete forever",
+  deleteAccountSubmitting: "Deleting…",
+  deleteAccountSuccess: "Account deleted. Thanks for using Lirefin.",
+  deleteAccountFailed: "Could not delete your account. Please try again.",
+  deleteAccountRefundFailed:
+    "We couldn't process the refund. Your account is still intact — please retry or contact support.",
+  deleteAccountReSignupHint:
+    "If you sign up again with the same email, you won't receive new free credits.",
 } as const satisfies Dict;
 
 const tr: Dict = {
@@ -352,6 +373,27 @@ const tr: Dict = {
   promoCodePlaceholder: "KODU GİR",
   invalidDiscount: "Geçersiz promosyon kodu",
   discountApplied: "Promosyon kodu uygulandı",
+  dangerZone: "Tehlikeli alan",
+  dangerZoneDescription:
+    "Hesabınızı ve hesaba bağlı tüm verileri kalıcı olarak silin.",
+  deleteAccount: "Hesabı sil",
+  deleteAccountModalTitle: "Hesabınız silinsin mi?",
+  deleteAccountModalLead:
+    "Bu işlem kalıcıdır ve geri alınamaz. Hesabınız, portföyünüz, analiz geçmişiniz ve kalan kredileriniz silinecektir.",
+  deleteAccountListSubscription:
+    "Aktif {plan} aboneliğiniz iptal edilecek — bir daha tahsilat yapılmayacak.",
+  deleteAccountRefundOption: "Son ödememi de iade edin",
+  deleteAccountRefundHint:
+    "İade işlemleri genellikle 5-10 iş günü içinde hesabınıza yansır.",
+  deleteAccountTypeDelete: "Onaylamak için \"delete\" yazın:",
+  deleteAccountSubmit: "Kalıcı olarak sil",
+  deleteAccountSubmitting: "Siliniyor…",
+  deleteAccountSuccess: "Hesabınız silindi. Lirefin'i kullandığınız için teşekkürler.",
+  deleteAccountFailed: "Hesabınız silinemedi. Lütfen tekrar deneyin.",
+  deleteAccountRefundFailed:
+    "İade işlemi yapılamadı. Hesabınız hâlâ aktif — lütfen tekrar deneyin veya destek ekibiyle iletişime geçin.",
+  deleteAccountReSignupHint:
+    "Aynı e-postayla tekrar kayıt olursanız ücretsiz kredileri tekrar alamazsınız.",
 };
 
 const de: Dict = {

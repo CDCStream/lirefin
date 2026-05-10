@@ -11,6 +11,7 @@ import {
   ApiError,
   cancelSubscription,
   changeSubscription,
+  deleteAccount,
   fetchCreditTransactions,
   fetchMe,
   fetchPackages,
@@ -226,6 +227,21 @@ export function OptionsApp() {
         <Section title={t("fabFloatingButton", uiLang)}>
           <FloatingButtonSection uiLang={uiLang} />
         </Section>
+
+        {account.status === "signedIn" && (
+          <Section title={t("dangerZone", uiLang)}>
+            <DangerZoneSection
+              backendUrl={settings.backendUrl}
+              uiLang={uiLang}
+              portfolioCount={settings.portfolio.length}
+              balance={account.me?.balance ?? 0}
+              onDeleted={async () => {
+                await signOut();
+                setAccount({ status: "anon" });
+              }}
+            />
+          </Section>
+        )}
 
         <p className="mt-12 text-[11px] text-slate-600 leading-relaxed">
           {t("disclaimer", uiLang)}
@@ -1366,5 +1382,309 @@ function PortfolioEditor({
         <div className="mt-2 text-xs text-slate-500">{t("noResults", uiLang)}</div>
       )}
     </div>
+  );
+}
+
+// ===================================================================
+// Danger Zone — account deletion
+//
+// GDPR Art. 17 / KVKK Madde 11 / Web Store policy: every signed-in
+// account must have a self-service delete button. The flow:
+//
+//   1. User clicks "Delete account" — opens DeleteAccountModal.
+//   2. Modal lists what will be deleted (account, portfolio, history,
+//      credits, active subscription if any).
+//   3. If the user has a live subscription, an opt-in checkbox lets
+//      them also request a refund of the most recent payment.
+//   4. User must literally type "delete" to enable the submit button —
+//      same anti-misclick pattern Stripe / Linear / GitHub use.
+//   5. On submit we call DELETE /api/auth/account; backend cancels the
+//      subscription, optionally refunds, and deletes the user row.
+//   6. We sign the user out locally and reset to the anon UI.
+//
+// Re-signup with the same email is intentionally allowed but does not
+// receive a fresh 25-credit signup bonus (anti-abuse — see migration
+// 004 `deleted_users`).
+// ===================================================================
+function DangerZoneSection({
+  backendUrl,
+  uiLang,
+  portfolioCount,
+  balance,
+  onDeleted,
+}: {
+  backendUrl: string;
+  uiLang: SupportedLanguageCode;
+  portfolioCount: number;
+  balance: number;
+  onDeleted: () => void | Promise<void>;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <div className="rounded-xl border border-bearish-500/30 bg-bearish-500/5 p-4">
+        <div className="flex items-start gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-semibold text-bearish-400">
+              {t("deleteAccount", uiLang)}
+            </div>
+            <div className="mt-1 text-xs text-slate-400 leading-relaxed">
+              {t("dangerZoneDescription", uiLang)}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-bearish-500/40 text-bearish-400 hover:bg-bearish-500/10"
+          >
+            {t("deleteAccount", uiLang)}
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <DeleteAccountModal
+          backendUrl={backendUrl}
+          uiLang={uiLang}
+          portfolioCount={portfolioCount}
+          balance={balance}
+          onClose={() => setOpen(false)}
+          onDeleted={async () => {
+            setOpen(false);
+            await onDeleted();
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+function DeleteAccountModal({
+  backendUrl,
+  uiLang,
+  portfolioCount,
+  balance,
+  onClose,
+  onDeleted,
+}: {
+  backendUrl: string;
+  uiLang: SupportedLanguageCode;
+  portfolioCount: number;
+  balance: number;
+  onClose: () => void;
+  onDeleted: () => void | Promise<void>;
+}) {
+  const [confirmInput, setConfirmInput] = useState("");
+  const [refundOptIn, setRefundOptIn] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionResponse | null>(
+    null,
+  );
+  const [subLoading, setSubLoading] = useState(true);
+
+  // Look up the user's subscription once on open so we can show the
+  // accurate "your X subscription will be cancelled" line and the
+  // refund checkbox only when there is something to refund.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const sub = await fetchSubscription(backendUrl);
+        if (!cancelled) setSubscription(sub);
+      } catch {
+        // Subscription lookup is non-critical for the delete flow. Fall
+        // through with null and the modal hides the sub-specific UI.
+        if (!cancelled) setSubscription(null);
+      } finally {
+        if (!cancelled) setSubLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [backendUrl]);
+
+  const hasActiveSub =
+    subscription !== null &&
+    subscription.active === true &&
+    !subscription.cancelAtPeriodEnd;
+
+  const canSubmit = confirmInput.trim().toLowerCase() === "delete" && !submitting;
+
+  const handleSubmit = async () => {
+    if (!canSubmit) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await deleteAccount(backendUrl, {
+        refundCurrentPeriod: hasActiveSub && refundOptIn,
+      });
+      // Best-effort: clear cached chrome.storage.local so a fresh
+      // re-signup on this device starts from scratch.
+      try {
+        await chrome.storage.local.clear();
+      } catch {
+        // ignore — clearing local cache is a nicety, not a requirement.
+      }
+      await onDeleted();
+    } catch (err) {
+      const e = err as ApiError;
+      if (e.code === "REFUND_FAILED") {
+        setError(t("deleteAccountRefundFailed", uiLang));
+      } else {
+        setError(t("deleteAccountFailed", uiLang));
+      }
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-account-title"
+    >
+      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl">
+        <div className="p-6">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-bearish-500/10 text-bearish-400 ring-1 ring-inset ring-bearish-500/30">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5"
+                aria-hidden="true"
+              >
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h2
+                id="delete-account-title"
+                className="text-base font-semibold text-slate-100"
+              >
+                {t("deleteAccountModalTitle", uiLang)}
+              </h2>
+              <p className="mt-1 text-xs text-slate-400 leading-relaxed">
+                {t("deleteAccountModalLead", uiLang)}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 space-y-2 rounded-lg border border-slate-800 bg-slate-950/40 p-3 text-xs text-slate-300">
+            <div className="flex items-center gap-2">
+              <Bullet />
+              <span>
+                {balance.toLocaleString()} {t("credits", uiLang)}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Bullet />
+              <span>
+                {portfolioCount} {t("portfolio", uiLang).toLowerCase()}
+              </span>
+            </div>
+            {!subLoading && hasActiveSub && (
+              <div className="flex items-start gap-2">
+                <Bullet />
+                <span>
+                  {t("deleteAccountListSubscription", uiLang).replace(
+                    "{plan}",
+                    subscription?.active
+                      ? subscription.packageId
+                      : "",
+                  )}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {!subLoading && hasActiveSub && (
+            <label className="mt-4 flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={refundOptIn}
+                onChange={(e) => setRefundOptIn(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-slate-700 bg-slate-900 accent-bearish-500"
+              />
+              <span className="text-xs text-slate-300 leading-relaxed">
+                {t("deleteAccountRefundOption", uiLang)}
+                {refundOptIn && (
+                  <span className="block mt-1 text-[11px] text-slate-500">
+                    {t("deleteAccountRefundHint", uiLang)}
+                  </span>
+                )}
+              </span>
+            </label>
+          )}
+
+          <div className="mt-5">
+            <label
+              htmlFor="delete-confirm-input"
+              className="block text-xs text-slate-400 mb-2"
+            >
+              {t("deleteAccountTypeDelete", uiLang)}
+            </label>
+            <input
+              id="delete-confirm-input"
+              type="text"
+              value={confirmInput}
+              onChange={(e) => setConfirmInput(e.target.value)}
+              placeholder="delete"
+              autoComplete="off"
+              autoFocus
+              disabled={submitting}
+              className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-bearish-500 disabled:opacity-50"
+            />
+          </div>
+
+          <p className="mt-3 text-[11px] text-slate-500 leading-relaxed">
+            {t("deleteAccountReSignupHint", uiLang)}
+          </p>
+
+          {error && (
+            <div className="mt-3 rounded-lg border border-bearish-500/40 bg-bearish-500/10 px-3 py-2 text-xs text-bearish-400">
+              {error}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center justify-end gap-2 border-t border-slate-800 px-6 py-4">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={submitting}
+            className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-50"
+          >
+            {t("cancel", uiLang)}
+          </button>
+          <button
+            type="button"
+            onClick={() => void handleSubmit()}
+            disabled={!canSubmit}
+            className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-bearish-600 hover:bg-bearish-500 text-white disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {submitting
+              ? t("deleteAccountSubmitting", uiLang)
+              : t("deleteAccountSubmit", uiLang)}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Bullet() {
+  return (
+    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-bearish-500" />
   );
 }

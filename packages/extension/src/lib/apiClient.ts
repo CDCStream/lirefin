@@ -469,3 +469,36 @@ export async function uncancelSubscription(
   );
   if (!res.ok) throw await parseError(res);
 }
+
+// =============== ACCOUNT DELETION ===============
+
+export interface DeleteAccountResult {
+  deleted: boolean;
+  subscriptionCancelled: boolean;
+  refunded: boolean;
+}
+
+/**
+ * Permanently delete the user's account. The backend cancels any active
+ * Dodo subscription, optionally refunds the most recent payment, and
+ * deletes the auth.users row (cascade-erasing every related record).
+ *
+ * Returns a result describing what actually happened so the UI can give
+ * the user honest feedback ("subscription cancelled, refund issued").
+ *
+ * On failure throws an `ApiError`; the caller should tell the user
+ * their account is still intact and offer a retry.
+ */
+export async function deleteAccount(
+  backendUrl: string,
+  options: { refundCurrentPeriod: boolean },
+): Promise<DeleteAccountResult> {
+  const res = await authedFetch(backend(backendUrl, "/api/auth/account"), {
+    method: "DELETE",
+    body: JSON.stringify({
+      refundCurrentPeriod: options.refundCurrentPeriod,
+    }),
+  });
+  if (!res.ok) throw await parseError(res);
+  return (await res.json()) as DeleteAccountResult;
+}
