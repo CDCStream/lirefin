@@ -438,11 +438,13 @@ const HTML_TEMPLATE = (locale: Locale) => {
   <script>
     (function () {
       var params = new URLSearchParams(location.search);
-      // Dodo redirects with ?payment_id=pay_… ; Polar (legacy) uses
-      // ?checkout_id=… . Whichever is present wins; if both are present
-      // we prefer payment_id so freshly migrated checkouts route through
-      // the direct DB lookup path (cheaper than a Polar API roundtrip).
+      // Three possible param shapes during the Polar → Dodo migration:
+      //   • Dodo one-time payment   → ?payment_id=pay_…
+      //   • Dodo subscription       → ?subscription_id=sub_…  (NO payment_id)
+      //   • Polar (legacy)          → ?checkout_id=…
+      // Order of preference: payment_id → subscription_id → checkout_id.
       var paymentId = params.get("payment_id");
+      var subscriptionId = params.get("subscription_id");
       var checkoutId = params.get("checkout_id");
       var statusEl = document.getElementById("status");
       var statusLabel = document.getElementById("status-label");
@@ -486,7 +488,11 @@ const HTML_TEMPLATE = (locale: Locale) => {
         }
         var queryParam = paymentId
           ? "payment_id=" + encodeURIComponent(paymentId)
-          : (checkoutId ? "checkout_id=" + encodeURIComponent(checkoutId) : null);
+          : subscriptionId
+            ? "subscription_id=" + encodeURIComponent(subscriptionId)
+            : checkoutId
+              ? "checkout_id=" + encodeURIComponent(checkoutId)
+              : null;
         if (!queryParam) {
           setStuck();
           return;
@@ -577,39 +583,102 @@ export async function billingSuccessRoute(app: FastifyInstance) {
 
   // Polled by the success page to detect when the webhook has landed. We
   // only return shape-stable JSON; nothing privileged is exposed because
-  // the `provider_order_id` itself is unguessable and we respond identically
+  // the lookup ids themselves are unguessable and we respond identically
   // for unknown ids and pending ones.
   //
-  // Two lookup strategies exist depending on which provider redirected
+  // Three lookup strategies exist depending on which provider redirected
   // the user:
   //
-  //   • Dodo  → ?payment_id=pay_… : direct lookup in `purchases` because
-  //             the webhook stores the payment id verbatim as
-  //             `provider_order_id`. No upstream API call needed.
-  //   • Polar → ?checkout_id=… : extra Polar `orders.list({ checkoutId })`
-  //             roundtrip to translate the (URL-safe) checkout id into
-  //             the order id we actually persisted. Kept for backwards
-  //             compatibility with the legacy Polar success URLs.
+  //   • Dodo one-time     → ?payment_id=pay_… : direct lookup in
+  //                          `purchases` because the webhook stores the
+  //                          payment id verbatim as `provider_order_id`.
+  //   • Dodo subscription → ?subscription_id=sub_… : Dodo subscription
+  //                          checkouts redirect WITHOUT a payment_id, so
+  //                          we resolve the user via the `subscriptions`
+  //                          table and then pull their most recent
+  //                          completed Dodo purchase (= the one this
+  //                          checkout just produced).
+  //   • Polar (legacy)    → ?checkout_id=… : extra Polar
+  //                          `orders.list({ checkoutId })` roundtrip to
+  //                          translate the checkout id into the order id
+  //                          we actually persisted. Kept for backwards
+  //                          compatibility with the legacy Polar success
+  //                          URLs.
   app.get("/billing/status", async (req, reply) => {
     const q = (req.query ?? {}) as {
       payment_id?: string;
+      subscription_id?: string;
       checkout_id?: string;
     };
     const paymentId =
       typeof q.payment_id === "string" && q.payment_id.length > 0
         ? q.payment_id
         : null;
+    const subscriptionId =
+      typeof q.subscription_id === "string" && q.subscription_id.length > 0
+        ? q.subscription_id
+        : null;
     const checkoutId =
       typeof q.checkout_id === "string" && q.checkout_id.length > 0
         ? q.checkout_id
         : null;
-    if (!paymentId && !checkoutId) {
+    if (!paymentId && !subscriptionId && !checkoutId) {
       return reply.code(400).send({
-        error: "payment_id or checkout_id is required",
+        error: "payment_id, subscription_id or checkout_id is required",
       });
     }
 
-    // Resolve to a single id we can use against `purchases.provider_order_id`.
+    // ---- Subscription path: resolve the user, then fetch their
+    // most recent Dodo purchase (= the one this checkout produced). The
+    // webhook will create / update the subscriptions row before the
+    // payment.succeeded webhook lands, so a missing row here means the
+    // first webhook hasn't been delivered yet — return "pending".
+    if (!paymentId && subscriptionId) {
+      const { data: subRow, error: subErr } = await supabaseAdmin
+        .from("subscriptions")
+        .select("user_id")
+        .eq("subscription_id", subscriptionId)
+        .maybeSingle();
+      if (subErr) {
+        app.log.warn({ err: subErr }, "billing status: subs lookup failed");
+        return reply.send({ status: "pending" });
+      }
+      const userId = subRow?.user_id;
+      if (!userId) {
+        return reply.send({ status: "pending" });
+      }
+      // Pull the most recent completed Dodo purchase for this user. The
+      // 30-minute window protects against returning a stale earlier
+      // purchase if the webhook for *this* checkout is still in flight.
+      const since = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+      const { data: purchase, error: pErr } = await supabaseAdmin
+        .from("purchases")
+        .select("status, credits, package_id, user_id, created_at")
+        .eq("user_id", userId)
+        .eq("provider", "dodo")
+        .eq("status", "completed")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (pErr) {
+        app.log.warn({ err: pErr }, "billing status: purchases lookup failed");
+        return reply.send({ status: "pending" });
+      }
+      if (!purchase) {
+        return reply.send({ status: "pending" });
+      }
+      const balance = await readBalance(purchase.user_id);
+      return reply.send({
+        status: "completed",
+        credits: purchase.credits,
+        packageId: purchase.package_id,
+        balance,
+      });
+    }
+
+    // ---- Payment-id / checkout-id path: resolve to a single id we can
+    // use against `purchases.provider_order_id`.
     let providerOrderId: string | null = paymentId;
     if (!providerOrderId && checkoutId) {
       try {
@@ -646,20 +715,7 @@ export async function billingSuccessRoute(app: FastifyInstance) {
       return reply.send({ status: data.status });
     }
 
-    // Read the user's current balance after the credit was applied. We do
-    // this here (instead of snapshotting it on the purchases row) so the
-    // success page reflects any spends that happened between webhook
-    // delivery and the user landing on the page.
-    let balance: number | null = null;
-    if (data.user_id) {
-      const { data: bal } = await supabaseAdmin
-        .from("credit_balances")
-        .select("credits")
-        .eq("user_id", data.user_id)
-        .maybeSingle();
-      balance = typeof bal?.credits === "number" ? bal.credits : null;
-    }
-
+    const balance = await readBalance(data.user_id);
     return reply.send({
       status: "completed",
       credits: data.credits,
@@ -667,4 +723,18 @@ export async function billingSuccessRoute(app: FastifyInstance) {
       balance,
     });
   });
+
+  // Reads the user's current balance after the credit was applied. We do
+  // this on every status response (instead of snapshotting it on the
+  // purchases row) so the success page reflects any spends that happened
+  // between webhook delivery and the user landing on the page.
+  async function readBalance(userId: string | null): Promise<number | null> {
+    if (!userId) return null;
+    const { data: bal } = await supabaseAdmin
+      .from("credit_balances")
+      .select("credits")
+      .eq("user_id", userId)
+      .maybeSingle();
+    return typeof bal?.credits === "number" ? bal.credits : null;
+  }
 }
