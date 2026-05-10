@@ -58,10 +58,8 @@ export interface CreditPackage {
    */
   unlimited?: boolean;
   /**
-   * Backend env var holding the Polar.sh product id (created in the Polar
-   * dashboard). Each package maps to one one-time product. The env name is
-   * intentionally kept abstract from the SDK so the package list stays the
-   * single source of truth across both backend and the extension UI.
+   * Backend env var holding the Polar.sh product id (legacy — kept while we
+   * migrate to DodoPayments so the polar.ts service still type-checks).
    */
   polarProductEnv:
     | "POLAR_PRODUCT_STARTER"
@@ -69,6 +67,19 @@ export interface CreditPackage {
     | "POLAR_PRODUCT_PRO"
     | "POLAR_PRODUCT_POWER"
     | "POLAR_PRODUCT_UNLIMITED";
+  /**
+   * Backend env var holding the DodoPayments product id (created in the
+   * Dodo dashboard, e.g. `pdt_0NeXOskVEBVLfu3cLPvAg`). Each package maps
+   * to one recurring subscription product. The env name is intentionally
+   * kept abstract from the SDK so the package list stays the single
+   * source of truth across both backend and the extension UI.
+   */
+  dodoProductEnv:
+    | "DODO_PRODUCT_STARTER"
+    | "DODO_PRODUCT_STANDARD"
+    | "DODO_PRODUCT_PRO"
+    | "DODO_PRODUCT_POWER"
+    | "DODO_PRODUCT_UNLIMITED";
 }
 
 export const CREDIT_PACKAGES: readonly CreditPackage[] = [
@@ -79,6 +90,7 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     credits: 350,
     bonusPct: 0,
     polarProductEnv: "POLAR_PRODUCT_STARTER",
+    dodoProductEnv: "DODO_PRODUCT_STARTER",
   },
   {
     id: "standard",
@@ -87,6 +99,7 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     credits: 750,
     bonusPct: 7,
     polarProductEnv: "POLAR_PRODUCT_STANDARD",
+    dodoProductEnv: "DODO_PRODUCT_STANDARD",
   },
   {
     id: "pro",
@@ -95,6 +108,7 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     credits: 2000,
     bonusPct: 14,
     polarProductEnv: "POLAR_PRODUCT_PRO",
+    dodoProductEnv: "DODO_PRODUCT_PRO",
   },
   {
     id: "power",
@@ -103,6 +117,7 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     credits: 4500,
     bonusPct: 22,
     polarProductEnv: "POLAR_PRODUCT_POWER",
+    dodoProductEnv: "DODO_PRODUCT_POWER",
   },
   {
     id: "unlimited",
@@ -112,6 +127,7 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     bonusPct: 43,
     unlimited: true,
     polarProductEnv: "POLAR_PRODUCT_UNLIMITED",
+    dodoProductEnv: "DODO_PRODUCT_UNLIMITED",
   },
 ] as const;
 

@@ -44,15 +44,21 @@ export const config = {
   supabaseServiceRoleKey: required("SUPABASE_SERVICE_ROLE_KEY"),
   supabaseJwtAud: optional("SUPABASE_JWT_AUD", "authenticated"),
 
-  // ---- Polar.sh (https://polar.sh) ----
+  // ---- Billing provider toggle ----
+  // Lirefin migrated from Polar.sh (org-level blocked for "investment
+  // products") to DodoPayments. We keep both adapters compiled in for a
+  // short transition window so a misconfigured deploy can roll back via env
+  // alone. `BILLING_PROVIDER` selects which one routes/billing.ts wires up.
+  billingProvider: (
+    optional("BILLING_PROVIDER", "dodo") as "dodo" | "polar"
+  ),
+
+  // ---- Polar.sh (legacy — only used when BILLING_PROVIDER=polar) ----
   // The access token / webhook secret are intentionally OPTIONAL so the
   // backend boots in local dev without billing configured. Calls to
-  // /api/billing/checkout will surface a 503 in that case (see polar service).
+  // /api/billing/checkout will surface a 503 in that case.
   polarAccessToken: optional("POLAR_ACCESS_TOKEN", ""),
   polarWebhookSecret: optional("POLAR_WEBHOOK_SECRET", ""),
-  // "production" (default) or "sandbox" — Polar exposes a sandbox env at
-  // sandbox.polar.sh that is wired up by passing `server: "sandbox"` to the
-  // SDK. Useful while developing without charging real cards.
   polarServer: optional("POLAR_SERVER", "production") as
     | "production"
     | "sandbox",
@@ -61,6 +67,19 @@ export const config = {
   polarProductPro: optional("POLAR_PRODUCT_PRO", ""),
   polarProductPower: optional("POLAR_PRODUCT_POWER", ""),
   polarProductUnlimited: optional("POLAR_PRODUCT_UNLIMITED", ""),
+
+  // ---- DodoPayments (https://dodopayments.com) ----
+  // Same OPTIONAL contract as Polar — empty values cause /billing/* calls
+  // to 503 instead of crashing the boot. `DODO_ENV` selects the test vs
+  // live host (test_mode → test.dodopayments.com, live_mode → live.…).
+  dodoApiKey: optional("DODO_API_KEY", ""),
+  dodoWebhookKey: optional("DODO_WEBHOOK_KEY", ""),
+  dodoEnv: optional("DODO_ENV", "test_mode") as "test_mode" | "live_mode",
+  dodoProductStarter: optional("DODO_PRODUCT_STARTER", ""),
+  dodoProductStandard: optional("DODO_PRODUCT_STANDARD", ""),
+  dodoProductPro: optional("DODO_PRODUCT_PRO", ""),
+  dodoProductPower: optional("DODO_PRODUCT_POWER", ""),
+  dodoProductUnlimited: optional("DODO_PRODUCT_UNLIMITED", ""),
 
   publicAppUrl: optional("PUBLIC_APP_URL", "http://localhost:8787"),
 } as const;
