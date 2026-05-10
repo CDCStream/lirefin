@@ -6,6 +6,25 @@
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas,
     "Liberation Mono", Menlo, monospace;
 
+  /* Navy = primary (Wealthfront / Mercury-style trust palette).
+     Used for headings, primary CTAs, links, and structural accents.
+     Tuned around #0a1f44 (the requested brand navy). */
+  --color-navy-50: #f0f4fb;
+  --color-navy-100: #d8e1f1;
+  --color-navy-200: #b3c5e6;
+  --color-navy-300: #82a0d2;
+  --color-navy-400: #4f76b6;
+  --color-navy-500: #2e5293;
+  --color-navy-600: #1e3a73;
+  --color-navy-700: #142b59;
+  --color-navy-800: #0a1f44;
+  --color-navy-900: #061434;
+  --color-navy-950: #030a20;
+
+  /* Brand = emerald (legacy). Kept because:
+     1. Bullish/positive sentiment is universally green in finance UIs.
+     2. The extension itself uses these greens — landing should match.
+     Used for accents, success states, badges, and the AI/highlight gradient. */
   --color-brand-50: #ecfdf5;
   --color-brand-100: #d1fae5;
   --color-brand-200: #a7f3d0;
@@ -18,34 +37,39 @@
   --color-brand-900: #064e3b;
   --color-brand-950: #022c22;
 
+  /* Sentiment semantics (do not retheme — investors expect these). */
   --color-bullish: #10b981;
   --color-neutral-mid: #64748b;
   --color-bearish: #ef4444;
 }
 
 :root {
+  /* Light mode — Wealthfront-ish: white-heavy, navy ink, very light borders. */
   --background: #ffffff;
-  --foreground: #0a0a0a;
-  --muted: #f4f4f5;
-  --muted-foreground: #52525b;
-  --border: #e4e4e7;
+  --foreground: #0a1f44;       /* navy-800 ink (not pure black) */
+  --muted: #f5f7fb;            /* lavender-tinted off-white */
+  --muted-foreground: #4b5b78; /* slate-blue secondary text */
+  --border: #e3e8f1;           /* very subtle navy-tinted border */
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
-  --accent: #ecfdf5;
+  --card-foreground: #0a1f44;
+  --accent: #ecfdf5;           /* emerald wash for "AI" badges */
   --accent-foreground: #047857;
+  --surface-tint: #f7faff;     /* hero/pricing wash */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #050507;
-    --foreground: #fafafa;
-    --muted: #18181b;
-    --muted-foreground: #a1a1aa;
-    --border: #27272a;
-    --card: #0c0c0f;
-    --card-foreground: #fafafa;
+    /* Dark mode — deep navy, not pure black, retains the trust palette. */
+    --background: #030a20;     /* navy-950 */
+    --foreground: #f5f7fb;
+    --muted: #061434;          /* navy-900 surface */
+    --muted-foreground: #a3b3cf;
+    --border: #142b59;         /* navy-700 */
+    --card: #061434;
+    --card-foreground: #f5f7fb;
     --accent: #064e3b;
     --accent-foreground: #6ee7b7;
+    --surface-tint: #061434;
   }
 }
 
@@ -59,6 +83,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-surface-tint: var(--surface-tint);
 }
 
 * {
@@ -81,7 +106,7 @@ body {
 
 ::selection {
   background: var(--color-brand-200);
-  color: var(--color-brand-900);
+  color: var(--color-navy-800);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -91,18 +116,33 @@ body {
   }
 }
 
+/* Subtle ruled grid for hero — much fainter than before to match the
+   Wealthfront-style calm hero. Avoid drawing the eye away from the headline. */
 .bg-grid {
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--foreground) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--foreground) 5%, transparent) 1px, transparent 1px);
-  background-size: 56px 56px;
+    linear-gradient(to right, color-mix(in srgb, var(--color-navy-500) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-navy-500) 4%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
 }
 
+/* Hero spotlight — soft pastel navy→emerald gradient at the top of the page. */
 .bg-radial-fade {
   background: radial-gradient(
-    ellipse at top,
-    color-mix(in srgb, var(--color-brand-500) 18%, transparent) 0%,
-    transparent 60%
+    ellipse 80% 50% at 50% 0%,
+    color-mix(in srgb, var(--color-navy-500) 10%, transparent) 0%,
+    color-mix(in srgb, var(--color-brand-500) 5%, transparent) 35%,
+    transparent 70%
+  );
+}
+
+/* New: large soft glow used behind hero preview & CTA. */
+.bg-soft-glow {
+  background: radial-gradient(
+    ellipse 60% 70% at 50% 50%,
+    color-mix(in srgb, var(--color-navy-500) 12%, transparent) 0%,
+    color-mix(in srgb, var(--color-brand-500) 6%, transparent) 50%,
+    transparent 80%
   );
 }
 
@@ -122,18 +162,20 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    color-mix(in srgb, var(--foreground) 8%, transparent),
+    color-mix(in srgb, var(--color-navy-500) 8%, transparent),
     transparent
   );
   animation: shimmer 2.4s infinite;
 }
 
+/* Prose styles for legal pages — keep navy-toned ink for consistency. */
 .prose-styles h2 {
   font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.025em;
   margin-top: 2.5rem;
   margin-bottom: 0.75rem;
+  color: var(--foreground);
 }
 .prose-styles h3 {
   font-size: 1.125rem;
@@ -141,6 +183,7 @@ body {
   letter-spacing: -0.015em;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
+  color: var(--foreground);
 }
 .prose-styles p {
   font-size: 0.95rem;
@@ -165,13 +208,14 @@ body {
   margin-top: 0.4rem;
 }
 .prose-styles a {
-  color: var(--color-brand-600);
+  color: var(--color-navy-700);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
+  font-weight: 500;
 }
 .prose-styles a:hover {
-  color: var(--color-brand-700);
+  color: var(--color-navy-800);
 }
 .prose-styles strong {
   color: var(--foreground);

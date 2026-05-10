@@ -35,30 +35,44 @@ const faqs = [
 
 export function FAQ() {
   return (
-    <section id="faq" className="border-b border-border/60 py-24 sm:py-32">
+    <section
+      id="faq"
+      className="border-b border-border/60 bg-surface-tint py-24 sm:py-32"
+    >
       <div className="mx-auto w-full max-w-3xl px-6">
         <div className="text-center">
-          <div className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-700 dark:text-brand-400">
             FAQ
           </div>
-          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-            Frequently asked questions
+          <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tight text-navy-800 dark:text-white sm:text-5xl">
+            Questions, answered.
           </h2>
+          <p className="mt-5 text-pretty text-lg text-muted-foreground">
+            Everything we&apos;d want to know before installing a finance
+            extension. Still missing something? Drop us a line at{" "}
+            <a
+              href="mailto:hello@lirefin.com"
+              className="font-medium text-navy-700 underline-offset-4 hover:underline dark:text-navy-200"
+            >
+              hello@lirefin.com
+            </a>
+            .
+          </p>
         </div>
 
-        <div className="mt-12 divide-y divide-border rounded-2xl border border-border bg-card">
+        <div className="mt-14 divide-y divide-border rounded-2xl border border-border bg-card shadow-sm">
           {faqs.map((item) => (
             <details
               key={item.q}
-              className="group p-6 [&_summary::-webkit-details-marker]:hidden"
+              className="group p-6 sm:p-7 [&_summary::-webkit-details-marker]:hidden"
             >
-              <summary className="flex cursor-pointer items-center justify-between gap-4 text-left text-base font-medium">
+              <summary className="flex cursor-pointer items-center justify-between gap-4 text-left text-base font-semibold text-navy-800 dark:text-white">
                 {item.q}
-                <span className="ml-auto inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-transform group-open:rotate-45">
+                <span className="ml-auto inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-all group-open:rotate-45 group-open:border-navy-500 group-open:text-navy-700 dark:group-open:text-navy-200">
                   +
                 </span>
               </summary>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
                 {item.a}
               </p>
             </details>

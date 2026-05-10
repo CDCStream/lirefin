@@ -56,41 +56,41 @@ export function Pricing() {
     <section id="pricing" className="border-b border-border/60 py-24 sm:py-32">
       <div className="mx-auto w-full max-w-6xl px-6">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-700 dark:text-brand-400">
             Pricing
           </div>
-          <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tight text-navy-800 dark:text-white sm:text-5xl">
             Start free. Upgrade when you read more than you write.
           </h2>
-          <p className="mt-4 text-pretty text-lg text-muted-foreground">
+          <p className="mt-5 text-pretty text-lg text-muted-foreground">
             Paid plans are launching soon. Until then, every new account ships
             with 25 free credits — enough to feel out the product.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
+        <div className="mt-16 grid gap-5 md:grid-cols-3">
           {tiers.map((tier) => (
             <div
               key={tier.name}
-              className={`relative flex flex-col rounded-2xl border bg-card p-7 ${
+              className={`relative flex flex-col rounded-2xl border bg-card p-7 transition-shadow ${
                 tier.highlight
-                  ? "border-brand-500/60 shadow-xl shadow-brand-500/10"
-                  : "border-border"
+                  ? "border-navy-700/50 shadow-xl shadow-navy-900/10 ring-1 ring-navy-700/10"
+                  : "border-border hover:shadow-md"
               }`}
             >
               {tier.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-navy-800 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-sm dark:bg-white dark:text-navy-900">
                   Most popular
                 </div>
               )}
 
               <div className="flex items-baseline gap-1">
-                <h3 className="text-lg font-semibold tracking-tight">
+                <h3 className="text-lg font-semibold tracking-tight text-navy-800 dark:text-white">
                   {tier.name}
                 </h3>
               </div>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-semibold tracking-tight">
+                <span className="text-5xl font-semibold tracking-tight tabular-nums text-navy-800 dark:text-white">
                   {tier.price}
                 </span>
                 <span className="text-sm text-muted-foreground">
@@ -105,7 +105,8 @@ export function Pricing() {
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex gap-2">
                     <Check
-                      className="mt-0.5 h-4 w-4 shrink-0 text-brand-600"
+                      className="mt-0.5 h-4 w-4 shrink-0 text-brand-600 dark:text-brand-400"
+                      strokeWidth={2.5}
                       aria-hidden
                     />
                     <span className="text-muted-foreground">{feature}</span>
@@ -115,10 +116,10 @@ export function Pricing() {
 
               <a
                 href={tier.ctaHref}
-                className={`mt-7 inline-flex h-10 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                className={`mt-7 inline-flex h-11 items-center justify-center rounded-full text-sm font-medium transition-colors ${
                   tier.highlight
-                    ? "bg-brand-600 text-white hover:bg-brand-700"
-                    : "border border-border bg-card hover:bg-muted"
+                    ? "bg-navy-800 text-white hover:bg-navy-900 dark:bg-white dark:text-navy-900 dark:hover:bg-navy-100"
+                    : "border border-border bg-card text-navy-700 hover:bg-muted dark:text-navy-100"
                 }`}
                 {...(tier.cta === "Coming soon"
                   ? { "aria-disabled": true }
@@ -130,11 +131,13 @@ export function Pricing() {
           ))}
         </div>
 
-        <p className="mx-auto mt-10 max-w-2xl text-center text-xs text-muted-foreground">
+        <p className="mx-auto mt-12 max-w-2xl text-center text-xs text-muted-foreground">
           Lirefin is a reading & summarization assistant. Output is for
           informational purposes only and is{" "}
-          <span className="font-medium">not investment advice</span>. AI
-          analyses can be wrong — always verify before acting.
+          <span className="font-semibold text-navy-700 dark:text-navy-200">
+            not investment advice
+          </span>
+          . AI analyses can be wrong — always verify before acting.
         </p>
       </div>
     </section>
