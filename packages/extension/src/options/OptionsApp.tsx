@@ -37,6 +37,9 @@ const REGION_OPTIONS: Array<{ value: Region; key: TranslationKey }> = [
   { value: "global", key: "regionGlobal" },
 ];
 
+const BILLING_ENABLED =
+  (import.meta.env.VITE_ENABLE_BILLING ?? "").toString() === "true";
+
 interface AccountState {
   status: "loading" | "anon" | "signedIn" | "error";
   me?: MeResponse;
@@ -156,10 +159,14 @@ export function OptionsApp() {
 
         {account.status === "signedIn" && (
           <Section title={t("subscriptionTitle", uiLang)}>
-            <BillingSection
-              backendUrl={settings.backendUrl}
-              uiLang={uiLang}
-            />
+            {BILLING_ENABLED ? (
+              <BillingSection
+                backendUrl={settings.backendUrl}
+                uiLang={uiLang}
+              />
+            ) : (
+              <BillingComingSoon uiLang={uiLang} />
+            )}
           </Section>
         )}
 
@@ -431,6 +438,48 @@ type Confirm =
       current: ApiPackage;
     }
   | { kind: "cancel"; current: ApiPackage; periodEnd: string | null };
+
+function BillingComingSoon({ uiLang }: { uiLang: SupportedLanguageCode }) {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950 p-5">
+      <div className="flex items-start gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-400 ring-1 ring-inset ring-brand-500/20">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+            aria-hidden
+          >
+            <path d="M12 2v4" />
+            <path d="m6.34 7.34-2.83-2.83" />
+            <path d="M2 12h4" />
+            <path d="m6.34 16.66-2.83 2.83" />
+            <path d="M12 22v-4" />
+            <path d="m17.66 16.66 2.83 2.83" />
+            <path d="M22 12h-4" />
+            <path d="m17.66 7.34 2.83-2.83" />
+          </svg>
+        </div>
+        <div className="space-y-1.5">
+          <div className="text-sm font-semibold text-slate-100">
+            {t("billingComingSoonTitle", uiLang)}
+          </div>
+          <p className="text-xs leading-relaxed text-slate-400">
+            {t("billingComingSoonBody", uiLang)}
+          </p>
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            {t("billingComingSoonHint", uiLang)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function BillingSection({
   backendUrl,

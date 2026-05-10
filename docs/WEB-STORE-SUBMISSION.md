@@ -1,0 +1,310 @@
+# Chrome Web Store submission guide — Lirefin
+
+Everything you need to submit Lirefin to the Chrome Web Store. Copy/paste each
+field below into the Developer Dashboard at
+<https://chrome.google.com/webstore/devconsole>.
+
+---
+
+## 0. Prerequisites checklist
+
+- [ ] **Chrome Web Store developer account** created and **\$5 one-time
+      registration fee** paid.
+- [ ] **Google account** verified (the one you registered with).
+- [ ] **Privacy Policy URL** ready and live. Use Vercel preview URL if your
+      custom domain isn't pointed yet.
+- [ ] **At least 1 screenshot** at 1280×800 or 640×400.
+- [ ] **128×128 store icon** (we use `assets/lirefin-logo-v2.png`, but the
+      packaged `icons/icon-128.png` is fine too).
+- [ ] **ZIP** built with `pnpm zip:webstore` and located in `dist-zip/`.
+
+---
+
+## 1. Upload the package
+
+1. Click **New item** in the developer dashboard.
+2. Upload the latest ZIP from `dist-zip/`. The dashboard auto-extracts and
+   reads `manifest.json`.
+3. Verify it picks up:
+   - Name: **Lirefin — AI Financial News Interpreter**
+   - Version: **0.1.5**
+   - Description: the 132-char manifest description.
+
+If the upload is rejected, the most common reasons are:
+
+- A `polar.sh` or other unused host in `host_permissions` (we removed these).
+- Description longer than 132 characters (ours is well under).
+- Missing 128×128 icon (ours is included).
+
+---
+
+## 2. Store listing
+
+### Category
+
+**Productivity** (primary)
+
+### Language
+
+**English** (United States) — initial submission. Add Turkish localization in
+a follow-up update once the landing page also ships in TR.
+
+### Single-purpose description (≤ 1,000 chars)
+
+> Lirefin reads financial news articles you open in your browser and tells
+> you, asset-by-asset for the assets in your portfolio, what each article
+> means — bullish, neutral, or bearish — with a confidence score and a direct
+> quote from the article that supports the take. The single purpose of the
+> extension is to make financial news faster to read and easier to act on.
+
+### Detailed description (the long one shown on the store page, up to 16,000 chars)
+
+```text
+Lirefin — Read the market, instantly.
+
+Lirefin is an AI Chrome extension that reads any financial news article you
+open and tells you what it means for the assets in your portfolio — bullish,
+neutral, or bearish — with cited reasoning. Powered by Anthropic's Claude.
+
+WHY LIREFIN
+
+Financial news is overwhelming. You open a story, skim three paragraphs,
+realize it's actually about a different company, and bounce. With Lirefin,
+you click Analyze once and get a structured breakdown in your language:
+
+  • Per-ticker sentiment for the assets you actually hold
+  • Confidence score (0–100%)
+  • Plain-English reasoning for the call
+  • The exact quote from the article that supports it
+
+No vague "AI thinks the market is mixed" — every claim is grounded in the
+text you're looking at.
+
+HOW IT WORKS
+
+  1. Pin Lirefin to your toolbar. Open any financial article.
+  2. The extension auto-detects 25+ major sites (Reuters, Bloomberg, CNBC,
+     WSJ, Financial Times, MarketWatch, Yahoo Finance, Investing.com,
+     Seeking Alpha, Barron's, Forbes, The Motley Fool, Benzinga, and more)
+     and shows a small floating Analyze button next to recognized articles.
+     For sites we don't recognize explicitly, DOM heuristics catch the rest.
+  3. Click Analyze. Mozilla Readability extracts only the article text;
+     it's sent to our backend where Claude processes it via the tool-use
+     API (which forces a strict JSON schema — no hallucinated tickers).
+  4. The side panel slides open beside the article with the breakdown.
+
+PORTFOLIO-AWARE
+
+Tell Lirefin what you hold once. We support US stocks and ETFs, plus
+European exchanges (XETRA, LSE, Euronext) and Asian exchanges (TSE, HKEX,
+KOSPI), with debounced ticker search backed by Finnhub. Every analysis is
+filtered through your actual exposure — no generic "the market is up"
+summaries.
+
+13 LANGUAGES IN, 13 LANGUAGES OUT
+
+Articles in English, Turkish, German, French, Spanish, Italian, Portuguese,
+Dutch, Japanese, Chinese, Korean, Arabic, or Russian — Claude detects
+automatically. Output in whichever of these you prefer. Set it once in the
+options panel.
+
+PRIVACY-FIRST
+
+  • API keys live only on our backend.
+  • Article text is never persistently logged.
+  • A short 5-minute SHA-256 cache avoids re-charging you for the same
+    article. The cache stores the analysis result, not the original text.
+  • We never read your tabs, browsing history, cookies, or form data.
+  • No third-party analytics or advertising trackers on the article pages
+    you visit.
+
+PRICING
+
+Every new account starts with 25 free credits. Paid monthly plans are
+launching soon and will be manageable directly from the extension's
+settings panel — upgrade, downgrade, or cancel anytime.
+
+NOT INVESTMENT ADVICE
+
+Lirefin is a reading and summarization assistant. Output is generated by
+AI from article text alone — it can be wrong, biased, or outdated. Treat
+it as a faster way to read the news, not as an investment recommendation.
+You are responsible for any decisions you make. Always verify with primary
+sources before acting.
+
+QUESTIONS / FEEDBACK
+
+  • Privacy: see https://lirefin.com/privacy
+  • Terms: https://lirefin.com/terms
+  • Support: support@lirefin.com
+```
+
+### URLs
+
+- **Homepage:** `https://lirefin.com`
+- **Support:** `https://lirefin.com/contact` (or `mailto:support@lirefin.com`)
+- **Privacy Policy:** `https://lirefin.com/privacy` ← REQUIRED, must be live
+
+> If your custom domain isn't pointed yet, use the Vercel preview URL like
+> `https://lirefin-landing-{hash}.vercel.app/privacy`. You can update the
+> URL later without re-review.
+
+---
+
+## 3. Privacy practices tab (a.k.a. "Data usage")
+
+This is the section that gets the most scrutiny. Be specific and honest.
+
+### Single purpose statement
+
+```text
+Read financial news articles in the user's browser, extract the article
+text, and produce an AI-generated breakdown of what the article means for
+the assets in the user's portfolio (bullish, neutral, or bearish) with
+confidence scores and supporting quotations.
+```
+
+### Permission justifications
+
+| Permission | Justification |
+|---|---|
+| `<all_urls>` (host_permissions) | Required so Lirefin can read article text on any site the user explicitly chooses to analyze. We do not read pages until the user clicks Analyze. |
+| `storage` | Stores user settings (output language, portfolio, FAB visibility prefs) in `chrome.storage.sync` so they roam across the user's signed-in Chrome profiles. |
+| `sidePanel` | The primary UI for displaying analysis results lives in Chrome's Side Panel. |
+| `scripting` | Required to inject a clean reader (Mozilla Readability) into the active tab to extract article text when the user clicks Analyze. |
+| `activeTab` | Used to detect whether the active tab is on a recognized financial-news site so we can show or hide the floating Analyze button. |
+| `tabs` | Used to read the current tab's URL/title for site-detection heuristics and to open the side panel scoped to the current tab. |
+| `contextMenus` | Adds an "Analyze with Lirefin" right-click entry on selected text, as a convenience alternative to the floating button. |
+| `identity` | Implements "Sign in with Google" via `chrome.identity.launchWebAuthFlow` for the user's Lirefin account. |
+
+### Data usage disclosures
+
+Tick **Yes** for these data types we collect:
+
+- **Personally identifiable information** — email address (for the user's
+  Lirefin account, via Google OAuth).
+- **Authentication information** — Google OAuth ID token (for sign-in).
+- **User activity** — analysis events (timestamp, hashed URL, output
+  language, credits consumed). Used solely for rate-limiting and billing.
+- **Website content** — text of articles the user explicitly clicks
+  Analyze on. Sent to our backend, processed transiently by Claude, NOT
+  persistently logged.
+
+Tick **No** for everything else (location, financial info, health info,
+personal communications, web history, etc.).
+
+### Data usage certification — tick all three:
+
+- [x] I do **not** sell or transfer user data to third parties, apart from
+      the approved use cases.
+- [x] I do **not** use or transfer user data for purposes that are
+      unrelated to my item's single purpose.
+- [x] I do **not** use or transfer user data to determine creditworthiness
+      or for lending purposes.
+
+### Remote code
+
+Tick: **No, I am not using remote code.**
+
+> All extension code is bundled into the ZIP. Article text is sent to
+> our backend for AI processing, but no JavaScript is executed remotely
+> in the user's browser.
+
+---
+
+## 4. Distribution
+
+- **Visibility:** Public.
+- **Regions:** All regions.
+- **Pricing:** Free.
+  > Paid plans launch later via an external Merchant-of-Record provider;
+  > they are NOT in-extension purchases, so this stays "Free" forever.
+- **Audience age:** Mature audience (financial-news content).
+
+---
+
+## 5. Required image assets
+
+| Asset | Size | Required | Status |
+|---|---|---|---|
+| Store icon | 128×128 | ✅ Required | `packages/extension/public/icons/icon-128.png` (also in ZIP) |
+| Small promo tile | 440×280 | Optional but strongly recommended | **TODO — see below** |
+| Marquee promo tile | 1400×560 | Optional | **TODO — optional** |
+| Screenshots | 1280×800 (preferred) or 640×400 | ✅ At least 1 required, up to 5 | **TODO — see below** |
+
+### Screenshot capture plan (5 shots)
+
+Use Chrome's built-in dev tools at viewport 1280×800 (Device toolbar →
+Responsive → 1280×800). Save as PNG, 1280×800 exact.
+
+1. **Hero shot** — A real financial news article (e.g. Reuters Markets) with:
+   - The Lirefin floating Analyze button visible on the article
+   - Side panel open beside it showing the bullish/neutral/bearish
+     breakdown for 3-4 tickers
+   - Caption overlay: "Read the market, instantly."
+
+2. **Side panel detail** — Side panel only, full-height, showing:
+   - One asset card expanded (sentiment, confidence bar, reasoning,
+     supporting quote)
+   - 2-3 collapsed asset cards below
+   - Caption: "Per-ticker breakdown with cited reasoning."
+
+3. **Settings / portfolio** — Options page showing:
+   - Portfolio with 6-8 mixed tickers (US + EU + Asia, with a couple of
+     ETFs)
+   - Search box with a search-in-progress
+   - Caption: "Global ticker support — US, Europe, Asia."
+
+4. **Multi-language** — Same article analyzed twice side-by-side:
+   - Output in English on the left
+   - Output in Turkish (or Japanese, or Spanish) on the right
+   - Caption: "13 output languages."
+
+5. **Floating button + dismiss menu** — Article page with:
+   - Floating Analyze button visible
+   - The dismiss menu open showing "Hide on this site / Hide everywhere"
+   - Caption: "Polite by default — hide it any time."
+
+### Promo tile (440×280)
+
+Recommended layout:
+
+- Solid emerald background (`#059669`)
+- Lirefin wordmark centered, white
+- Tagline below: "Read the market, instantly."
+- Bottom-right: small icon variant
+
+You can use any vector tool (Figma, Inkscape, Affinity, etc.) and export
+PNG at 440×280 exactly.
+
+---
+
+## 6. Submission
+
+1. Click **Submit for review**.
+2. Expect **3–7 business days** for first-time review (sometimes longer
+   for finance-related extensions).
+3. If rejected, the dashboard tells you exactly which policy section was
+   flagged. Common rejection reasons for finance extensions:
+   - Description implies investment advice → ours says
+     "reading and summarization assistant" + "not investment advice".
+   - Privacy Policy is generic / not visible → ours is detailed at
+     `/privacy`.
+   - Permissions over-scoped → we already trimmed `polar.sh` hosts.
+4. While waiting, do not push new versions of the ZIP — that resets the
+   review queue position.
+
+---
+
+## 7. After approval
+
+- Note the **public extension ID** assigned by the store. Add it to:
+  - `packages/backend/.env` → `ALLOWED_ORIGINS=chrome-extension://<EXT_ID>`
+  - Your Supabase Auth → "Redirect URLs" → `chrome-extension://<EXT_ID>/*`
+  - Google Cloud Console → OAuth client → Authorized origins, if needed.
+- Update the landing page's "Add to Chrome" CTA to the real Web Store URL:
+  - `packages/landing/src/lib/config.ts` → `webStoreUrl`.
+- Tag the release in git: `git tag v0.1.5 && git push --tags`.
+- Announce: tweet, post on Hacker News (Show HN), Indie Hackers,
+  /r/chrome_extensions, /r/algotrading (with a "non-promotional, looking
+  for feedback" framing).

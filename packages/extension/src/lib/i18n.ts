@@ -173,6 +173,11 @@ const en = {
   promoCodePlaceholder: "ENTER CODE",
   invalidDiscount: "Invalid promo code",
   discountApplied: "Promo code applied",
+  billingComingSoonTitle: "Paid plans launching soon",
+  billingComingSoonBody:
+    "We're putting the finishing touches on subscriptions. Until then, every account ships with 25 free credits — enjoy the analyses on us.",
+  billingComingSoonHint:
+    "We'll email you the moment they go live. No action needed.",
 } as const satisfies Dict;
 
 const tr: Dict = {

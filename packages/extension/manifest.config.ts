@@ -11,9 +11,9 @@ export default defineManifest({
   manifest_version: 3,
   name: "Lirefin — AI Financial News Interpreter",
   short_name: "Lirefin",
-  version: "0.1.4",
+  version: "0.1.5",
   description:
-    "Lirefin reads financial news for you and surfaces bullish / neutral / bearish signals for the assets in your portfolio, powered by Claude.",
+    "AI assistant that reads financial news and tells you what each article means for the assets in your portfolio. Powered by Claude.",
   icons: {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -21,7 +21,7 @@ export default defineManifest({
     "128": "icons/icon-128.png",
   },
   action: {
-    default_title: "Lirefin",
+    default_title: "Lirefin — Analyze this article",
     default_popup: "src/popup/index.html",
     default_icon: {
       "16": "icons/icon-16.png",
@@ -49,9 +49,6 @@ export default defineManifest({
     "<all_urls>",
     "https://accounts.google.com/*",
     "https://*.supabase.co/*",
-    "https://*.polar.sh/*",
-    "https://checkout.polar.sh/*",
-    "https://buy.polar.sh/*",
     ...extraHosts,
   ],
   content_scripts: [
@@ -98,7 +95,6 @@ export default defineManifest({
         "*://*.apple.com/*",
         "*://*.icloud.com/*",
         "*://*.paypal.com/*",
-        "*://*.polar.sh/*",
       ],
       js: ["src/content/index.ts"],
       run_at: "document_idle",
