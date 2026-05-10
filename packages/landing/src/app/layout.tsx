@@ -43,13 +43,13 @@ export const metadata: Metadata = {
     siteName: "Lirefin",
     title: "Lirefin — AI Financial News Interpreter for Chrome",
     description:
-      "AI explains every financial article — instantly. Lirefin is a Chrome extension that turns any financial news article into a portfolio-aware bullish, neutral, or bearish breakdown with cited reasoning.",
+      "AI explains all financial news — instantly. Lirefin is a Chrome extension that turns any financial news article into a portfolio-aware bullish, neutral, or bearish breakdown with cited reasoning.",
     images: [
       {
         url: "/lirefin-banner.png",
         width: 1200,
         height: 630,
-        alt: "Lirefin — AI explains every financial article, instantly.",
+        alt: "Lirefin — AI explains all financial news, instantly.",
       },
     ],
   },
