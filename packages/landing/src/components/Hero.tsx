@@ -92,7 +92,7 @@ function HeroPreview() {
         <div className="grid gap-0 sm:grid-cols-[1.4fr_1fr]">
           <div className="space-y-3 p-6 text-left sm:p-8">
             <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Reuters · 2 min read
+              Reuters · 12 min read
             </div>
             <div className="text-lg font-semibold leading-snug text-navy-800 dark:text-white">
               Nvidia tops Q3 estimates as data-center demand surges; raises
