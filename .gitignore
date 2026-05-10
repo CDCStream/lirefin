@@ -1,0 +1,21 @@
+node_modules
+dist
+build
+
+# Environment files — never commit. Real secrets live here in dev.
+.env
+.env.*
+!.env.example
+
+*.log
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+coverage
+.turbo
+.cache
+packages/extension/dist
+packages/backend/dist
+packages/shared/dist
+*.tsbuildinfo

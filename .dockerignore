@@ -1,0 +1,39 @@
+# Reduce build context size + keep secrets out of the image.
+
+**/node_modules
+**/dist
+**/.turbo
+**/.cache
+**/.next
+**/.vite
+**/coverage
+**/.pnpm-store
+
+# Editor / OS noise
+.DS_Store
+.idea
+.vscode
+
+# Local-only env files (Railway injects env at runtime)
+**/.env
+**/.env.*
+!**/.env.example
+
+# Extension build artifacts (backend image doesn't need these)
+packages/extension/dist
+packages/extension/build
+packages/extension/release
+packages/extension/.cache
+
+# Tests + assets that backend doesn't need at runtime
+**/__tests__
+**/*.test.ts
+**/*.spec.ts
+assets
+docs
+.cursor
+.github
+.git
+
+# Logs
+**/*.log

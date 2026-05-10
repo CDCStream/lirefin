@@ -1,0 +1,33 @@
+/* Self-hosted Inter Variable — single woff2, ~30KB, works offline & inside extensions. */
+@import "@fontsource-variable/inter/index.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: theme(fontFamily.sans);
+  -webkit-font-smoothing: antialiased;
+  background: #0b1220;
+  color: #e5e7eb;
+}
+
+/* Brand wordmark uses Inter with tighter tracking and the variable axes
+   pushed to a confident weight. Letter-spacing trimmed for a modern look. */
+.brand-wordmark {
+  font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  font-variation-settings: "wght" 750;
+  letter-spacing: -0.025em;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+}
