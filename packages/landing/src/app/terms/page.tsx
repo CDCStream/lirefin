@@ -93,21 +93,23 @@ export default function TermsPage() {
 
         <h3>4.3 Billing</h3>
         <p>
-          Payments are processed by a third-party Merchant-of-Record
-          provider, which acts as the seller of record for your jurisdiction
-          and handles applicable sales tax / VAT. The provider&apos;s own
-          terms apply to the payment transaction itself; ours apply to the
-          Service.
+          Payments are processed by <strong>Dodo Payments</strong>, our
+          Merchant-of-Record provider. Dodo acts as the seller of record
+          for your jurisdiction and handles applicable sales tax / VAT.
+          Dodo&apos;s own terms apply to the payment transaction itself;
+          ours apply to the Service.
         </p>
 
-        <h3>4.4 Refunds</h3>
+        <h3>4.4 Refunds and cancellations</h3>
         <p>
-          You may cancel a subscription at any time from the extension&apos;s
-          settings panel. Cancellation takes effect at the end of the current
-          billing period. Where required by law (e.g. EU 14-day cooling-off
-          for digital goods that have not been used), refunds will be issued
-          via the same Merchant-of-Record provider. Otherwise, payments are
-          generally non-refundable except at our discretion.
+          You may cancel a subscription at any time from the
+          extension&apos;s settings panel. Cancellation takes effect at the
+          end of the current billing period. EU / EEA / UK consumers have a
+          statutory 14-day right of withdrawal for digital services. Other
+          refunds are at our discretion. The full rules — including how to
+          request a refund, how pro-rated refunds are calculated, and what
+          is non-refundable — are in our{" "}
+          <Link href="/refund">Refund Policy</Link>.
         </p>
 
         <h3>4.5 Price changes</h3>

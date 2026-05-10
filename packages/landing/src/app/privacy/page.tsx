@@ -74,15 +74,16 @@ export default function PrivacyPage() {
           visit, your tabs, your cookies, or any form data.
         </p>
 
-        <h3>1.5 Billing data (when paid plans launch)</h3>
+        <h3>1.5 Billing data</h3>
         <p>
-          Once paid plans go live, billing will be processed by a
-          Merchant-of-Record payment provider. They will collect the
-          information required to process the transaction (name, email,
-          billing country, last four digits of payment instrument, tax
-          identifier where required). We receive a transaction confirmation
-          and, upon successful payment, credit your account. We never see or
-          store full card numbers, CVVs, or bank credentials.
+          Billing is processed by <strong>Dodo Payments</strong>, our
+          Merchant-of-Record. Dodo collects the information required to
+          process the transaction (name, email, billing country, last four
+          digits of payment instrument, tax identifier where required). We
+          receive a transaction confirmation and, upon successful payment,
+          credit your account. We never see or store full card numbers,
+          CVVs, or bank credentials. Dodo&apos;s own privacy policy
+          governs the data they collect from you during checkout.
         </p>
 
         <h3>1.6 Information we do NOT collect</h3>
@@ -158,9 +159,10 @@ export default function PrivacyPage() {
             you sign in with Google.
           </li>
           <li>
-            <strong>Merchant-of-Record provider</strong> (announced at
-            paid-plan launch) — handles checkout, subscription management,
-            sales tax / VAT, and refunds.
+            <strong>Dodo Payments</strong> (USA) — our Merchant-of-Record.
+            Handles checkout, subscription management, sales tax / VAT,
+            and refunds. Dodo collects the personal and payment
+            information required to process the transaction.
           </li>
         </ul>
         <p>

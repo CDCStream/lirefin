@@ -26,6 +26,7 @@ export const FOOTER_LINKS = {
   legal: [
     { href: "/privacy", label: "Privacy Policy" },
     { href: "/terms", label: "Terms of Service" },
+    { href: "/refund", label: "Refund Policy" },
     { href: "/contact", label: "Contact" },
   ],
 } as const;
