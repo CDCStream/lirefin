@@ -16,15 +16,15 @@ export function Hero() {
           <Sparkles className="h-3.5 w-3.5 text-brand-600" />
           <span className="text-navy-700 dark:text-navy-200">Powered by Claude</span>
           <span className="text-border">·</span>
-          <span>25+ news sites</span>
+          <span>Any financial site</span>
           <span className="text-border">·</span>
           <span>13 languages</span>
         </div>
 
         <h1 className="mt-8 max-w-4xl text-balance text-5xl font-semibold tracking-tight text-navy-800 dark:text-white sm:text-7xl sm:leading-[1.02]">
-          Read the market,{" "}
+          AI explains every financial article{" "}
           <span className="bg-gradient-to-r from-navy-700 via-navy-500 to-brand-500 bg-clip-text text-transparent">
-            instantly.
+            — instantly.
           </span>
         </h1>
 
