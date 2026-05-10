@@ -1,3 +1,7 @@
+import { initSentry } from "../lib/sentry.js";
+
+initSentry("background");
+
 import { ApiError, streamAnalyzeNews } from "../lib/apiClient.js";
 import { MSG, type ExtensionMessage } from "../lib/messages.js";
 import { getSettings, setLastAnalysis } from "../lib/storage.js";
