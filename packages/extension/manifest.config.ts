@@ -11,9 +11,9 @@ export default defineManifest({
   manifest_version: 3,
   name: "Lirefin — AI Financial News Interpreter",
   short_name: "Lirefin",
-  version: "0.1.5",
+  version: "0.1.6",
   description:
-    "AI assistant that reads financial news and tells you what each article means for the assets in your portfolio. Powered by Claude.",
+    "AI summarizer that labels financial news as bullish, neutral, or bearish for assets in your portfolio. Powered by Claude.",
   icons: {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -40,8 +40,6 @@ export default defineManifest({
     "storage",
     "sidePanel",
     "scripting",
-    "activeTab",
-    "tabs",
     "contextMenus",
     "identity",
   ],
