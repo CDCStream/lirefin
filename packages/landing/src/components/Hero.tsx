@@ -22,7 +22,7 @@ export function Hero() {
         </div>
 
         <h1 className="mt-8 max-w-4xl text-balance text-5xl font-semibold tracking-tight text-navy-800 dark:text-white sm:text-7xl sm:leading-[1.02]">
-          AI explains all financial news{" "}
+          AI explains all financial news and articles{" "}
           <span className="bg-gradient-to-r from-navy-700 via-navy-500 to-brand-500 bg-clip-text text-transparent">
             — instantly.
           </span>
