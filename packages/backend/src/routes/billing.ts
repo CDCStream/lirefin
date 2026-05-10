@@ -897,11 +897,39 @@ async function handleDodoPaymentSucceeded(
     return;
   }
 
-  // Subscription-attached payments give us product_id via the
-  // subscription record on Dodo's side, but the payment payload itself
-  // also includes the cart. Subscription invoices ship a single-item
-  // cart with the recurring product id.
-  const productId = data.product_cart?.[0]?.product_id;
+  // Resolve which product was paid for. Two flows:
+  //   1. ONE-TIME PAYMENT  → `product_cart` is populated.
+  //   2. SUBSCRIPTION      → `product_cart` is null, but `subscription_id`
+  //                          is set. We resolve the product id from our
+  //                          local subscriptions row (filled by the
+  //                          parallel `subscription.active` webhook); if
+  //                          that hasn't landed yet, we fall back to a
+  //                          live `subscriptions.retrieve` against Dodo
+  //                          so we never lose a credit grant to event
+  //                          ordering.
+  let productId: string | undefined = data.product_cart?.[0]?.product_id;
+  if (!productId && data.subscription_id) {
+    const { data: subRow } = await supabaseAdmin
+      .from("subscriptions")
+      .select("product_id")
+      .eq("subscription_id", data.subscription_id)
+      .maybeSingle();
+    productId = subRow?.product_id ?? undefined;
+    if (!productId) {
+      try {
+        const liveSub = await dodo
+          .dodoClient()
+          .subscriptions.retrieve(data.subscription_id);
+        productId = liveSub.product_id;
+      } catch (err) {
+        app.log.warn(
+          { err, subscriptionId: data.subscription_id },
+          "could not retrieve dodo subscription for payment lookup",
+        );
+      }
+    }
+  }
+
   const pkg = productId ? dodo.findPackageByProductId(productId) : undefined;
   const userId =
     typeof data.metadata?.user_id === "string" ? data.metadata.user_id : null;
@@ -909,7 +937,7 @@ async function handleDodoPaymentSucceeded(
 
   if (!userId || !pkg) {
     app.log.warn(
-      { paymentId, userId, productId, hasPkg: !!pkg },
+      { paymentId, userId, productId, hasPkg: !!pkg, subId: data.subscription_id },
       "dodo payment.succeeded missing user_id / package — cannot grant credits",
     );
     return;

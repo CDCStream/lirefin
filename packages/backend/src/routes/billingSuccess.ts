@@ -41,7 +41,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Not confirmed yet — try refreshing",
     newBalance: "New balance",
     creditsAdded: "added",
-    meta: "Charged via Polar.sh",
+    meta: "Charged via Dodo Payments",
     ctaOpen: "Open Lirefin",
     ctaClose: "Close this tab",
     ctaCloseFallback: "You can safely close this tab.",
@@ -57,7 +57,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Henüz onaylanmadı — sayfayı yenileyin",
     newBalance: "Yeni bakiye",
     creditsAdded: "eklendi",
-    meta: "Polar.sh üzerinden tahsilat",
+    meta: "Dodo Payments üzerinden tahsilat",
     ctaOpen: "Lirefin'e dön",
     ctaClose: "Bu sekmeyi kapat",
     ctaCloseFallback: "Bu sekmeyi rahatça kapatabilirsiniz.",
@@ -73,7 +73,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Noch nicht bestätigt — bitte neu laden",
     newBalance: "Neuer Kontostand",
     creditsAdded: "hinzugefügt",
-    meta: "Abrechnung über Polar.sh",
+    meta: "Abrechnung über Dodo Payments",
     ctaOpen: "Lirefin öffnen",
     ctaClose: "Diesen Tab schließen",
     ctaCloseFallback: "Sie können diesen Tab nun schließen.",
@@ -89,7 +89,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Pas encore confirmé — actualisez la page",
     newBalance: "Nouveau solde",
     creditsAdded: "ajoutés",
-    meta: "Facturé via Polar.sh",
+    meta: "Facturé via Dodo Payments",
     ctaOpen: "Ouvrir Lirefin",
     ctaClose: "Fermer cet onglet",
     ctaCloseFallback: "Vous pouvez fermer cet onglet.",
@@ -105,7 +105,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Aún no confirmado — recarga la página",
     newBalance: "Nuevo saldo",
     creditsAdded: "añadidos",
-    meta: "Cobro a través de Polar.sh",
+    meta: "Cobro a través de Dodo Payments",
     ctaOpen: "Abrir Lirefin",
     ctaClose: "Cerrar esta pestaña",
     ctaCloseFallback: "Ya puedes cerrar esta pestaña.",
@@ -121,7 +121,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Non ancora confermato — ricarica la pagina",
     newBalance: "Nuovo saldo",
     creditsAdded: "aggiunti",
-    meta: "Addebito tramite Polar.sh",
+    meta: "Addebito tramite Dodo Payments",
     ctaOpen: "Apri Lirefin",
     ctaClose: "Chiudi questa scheda",
     ctaCloseFallback: "Puoi chiudere questa scheda.",
@@ -137,7 +137,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Ainda não confirmado — recarregue a página",
     newBalance: "Novo saldo",
     creditsAdded: "adicionados",
-    meta: "Cobrado via Polar.sh",
+    meta: "Cobrado via Dodo Payments",
     ctaOpen: "Abrir Lirefin",
     ctaClose: "Fechar esta aba",
     ctaCloseFallback: "Você pode fechar esta aba.",
@@ -153,7 +153,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Nog niet bevestigd — vernieuw de pagina",
     newBalance: "Nieuw saldo",
     creditsAdded: "toegevoegd",
-    meta: "Betaald via Polar.sh",
+    meta: "Betaald via Dodo Payments",
     ctaOpen: "Open Lirefin",
     ctaClose: "Dit tabblad sluiten",
     ctaCloseFallback: "Je kunt dit tabblad sluiten.",
@@ -169,7 +169,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "まだ確認されていません — 更新してください",
     newBalance: "新しい残高",
     creditsAdded: "追加",
-    meta: "Polar.sh 経由で請求",
+    meta: "Dodo Payments 経由で請求",
     ctaOpen: "Lirefin を開く",
     ctaClose: "このタブを閉じる",
     ctaCloseFallback: "このタブは閉じても安全です。",
@@ -185,7 +185,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "尚未确认 — 请刷新页面",
     newBalance: "新余额",
     creditsAdded: "已添加",
-    meta: "通过 Polar.sh 收费",
+    meta: "通过 Dodo Payments 收费",
     ctaOpen: "打开 Lirefin",
     ctaClose: "关闭此标签页",
     ctaCloseFallback: "您可以安全地关闭此标签页。",
@@ -201,7 +201,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "아직 확인되지 않음 — 새로고침해 주세요",
     newBalance: "새 잔액",
     creditsAdded: "추가됨",
-    meta: "Polar.sh를 통한 결제",
+    meta: "Dodo Payments를 통한 결제",
     ctaOpen: "Lirefin 열기",
     ctaClose: "이 탭 닫기",
     ctaCloseFallback: "이 탭을 닫아도 됩니다.",
@@ -217,7 +217,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "لم يتم التأكيد بعد — حاول التحديث",
     newBalance: "الرصيد الجديد",
     creditsAdded: "تمت الإضافة",
-    meta: "تم الدفع عبر Polar.sh",
+    meta: "تم الدفع عبر Dodo Payments",
     ctaOpen: "فتح Lirefin",
     ctaClose: "إغلاق علامة التبويب هذه",
     ctaCloseFallback: "يمكنك إغلاق علامة التبويب الآن.",
@@ -233,7 +233,7 @@ const LOCALES: Record<Locale, {
     statusStuck: "Ещё не подтверждено — обновите страницу",
     newBalance: "Новый баланс",
     creditsAdded: "добавлено",
-    meta: "Оплачено через Polar.sh",
+    meta: "Оплачено через Dodo Payments",
     ctaOpen: "Открыть Lirefin",
     ctaClose: "Закрыть эту вкладку",
     ctaCloseFallback: "Можете спокойно закрыть эту вкладку.",
@@ -247,25 +247,27 @@ function isLocale(value: string): value is Locale {
 }
 
 /**
- * Public landing page for the URL Polar redirects to after a successful
- * checkout. Polar passes `checkout_id` and `customer_session_token` in the
- * query string; we use the `checkout_id` to look up the resulting `order.id`
- * via Polar (server-side) and then poll our own `purchases` table to confirm
- * that the webhook has finished crediting the account.
+ * Public landing page for the URL the billing provider redirects to after
+ * a successful checkout. Two query-param shapes are supported so we can
+ * handle both providers during the migration window:
+ *
+ *   • DodoPayments  → ?payment_id=pay_…&status=succeeded[&subscription_id=sub_…]
+ *   • Polar.sh      → ?checkout_id=…  (legacy)
  *
  * The page itself is a tiny inlined HTML document — no React, no Tailwind —
  * because it runs on a different origin from the extension and we want a
  * fast paint with zero CSP gymnastics.
  *
  * UX:
- *   1. Polar redirects → /billing/success?checkout_id=...
- *   2. The HTML kicks off a polling loop that hits /billing/status?checkout_id=...
+ *   1. Provider redirects → /billing/success?payment_id=… (or ?checkout_id=…)
+ *   2. The HTML kicks off a polling loop that hits /billing/status with
+ *      whichever id we received.
  *   3. As soon as the webhook flips the row to "completed" we render the
  *      credit total and the "open Lirefin" CTA.
  *
- * If the checkout_id never resolves (very rare — webhook could not be
- * delivered) we surface a friendly fallback after ~30s telling the user to
- * refresh; the credits will still land via the next webhook retry.
+ * If neither id ever resolves (very rare — webhook could not be delivered)
+ * we surface a friendly fallback after ~30s telling the user to refresh;
+ * the credits will still land via the next webhook retry.
  */
 
 const HTML_TEMPLATE = (locale: Locale) => {
@@ -436,6 +438,11 @@ const HTML_TEMPLATE = (locale: Locale) => {
   <script>
     (function () {
       var params = new URLSearchParams(location.search);
+      // Dodo redirects with ?payment_id=pay_… ; Polar (legacy) uses
+      // ?checkout_id=… . Whichever is present wins; if both are present
+      // we prefer payment_id so freshly migrated checkouts route through
+      // the direct DB lookup path (cheaper than a Polar API roundtrip).
+      var paymentId = params.get("payment_id");
       var checkoutId = params.get("checkout_id");
       var statusEl = document.getElementById("status");
       var statusLabel = document.getElementById("status-label");
@@ -477,11 +484,14 @@ const HTML_TEMPLATE = (locale: Locale) => {
           setStuck();
           return;
         }
-        if (!checkoutId) {
+        var queryParam = paymentId
+          ? "payment_id=" + encodeURIComponent(paymentId)
+          : (checkoutId ? "checkout_id=" + encodeURIComponent(checkoutId) : null);
+        if (!queryParam) {
           setStuck();
           return;
         }
-        fetch("/billing/status?checkout_id=" + encodeURIComponent(checkoutId), {
+        fetch("/billing/status?" + queryParam, {
           credentials: "omit",
         })
           .then(function (res) { return res.ok ? res.json() : null; })
@@ -499,7 +509,7 @@ const HTML_TEMPLATE = (locale: Locale) => {
 
       // Chrome/Firefox only allow window.close() on tabs that JavaScript
       // opened (window.open). Tabs reached via top-level navigation — like
-      // this Polar redirect — cannot be closed programmatically. We try
+      // this provider redirect — cannot be closed programmatically. We try
       // anyway, and if we're still alive 200ms later we surface a friendly
       // hint asking the user to close the tab manually.
       function attemptClose() {
@@ -567,41 +577,62 @@ export async function billingSuccessRoute(app: FastifyInstance) {
 
   // Polled by the success page to detect when the webhook has landed. We
   // only return shape-stable JSON; nothing privileged is exposed because
-  // the `polar_order_id` itself is unguessable and we respond identically
-  // for unknown checkout ids and pending ones.
+  // the `provider_order_id` itself is unguessable and we respond identically
+  // for unknown ids and pending ones.
+  //
+  // Two lookup strategies exist depending on which provider redirected
+  // the user:
+  //
+  //   • Dodo  → ?payment_id=pay_… : direct lookup in `purchases` because
+  //             the webhook stores the payment id verbatim as
+  //             `provider_order_id`. No upstream API call needed.
+  //   • Polar → ?checkout_id=… : extra Polar `orders.list({ checkoutId })`
+  //             roundtrip to translate the (URL-safe) checkout id into
+  //             the order id we actually persisted. Kept for backwards
+  //             compatibility with the legacy Polar success URLs.
   app.get("/billing/status", async (req, reply) => {
-    const checkoutId =
-      typeof (req.query as { checkout_id?: string })?.checkout_id === "string"
-        ? (req.query as { checkout_id: string }).checkout_id
+    const q = (req.query ?? {}) as {
+      payment_id?: string;
+      checkout_id?: string;
+    };
+    const paymentId =
+      typeof q.payment_id === "string" && q.payment_id.length > 0
+        ? q.payment_id
         : null;
-    if (!checkoutId) {
-      return reply.code(400).send({ error: "checkout_id is required" });
+    const checkoutId =
+      typeof q.checkout_id === "string" && q.checkout_id.length > 0
+        ? q.checkout_id
+        : null;
+    if (!paymentId && !checkoutId) {
+      return reply.code(400).send({
+        error: "payment_id or checkout_id is required",
+      });
     }
 
-    // The webhook stores `polar_order_id`. Polar's `orders.list({ checkoutId })`
-    // is the documented way to get from a checkout id (which we have in the
-    // success URL) to the resulting order id. While the user is still on the
-    // payment screen the list will be empty; we treat that as `pending` and
-    // let the client poll again.
-    let orderId: string | null = null;
-    try {
-      const { polarClient } = await import("../services/polar.js");
-      const polar = polarClient();
-      const page = await polar.orders.list({ checkoutId, limit: 1 });
-      const items = page.result?.items ?? [];
-      orderId = items[0]?.id ?? null;
-    } catch {
-      return reply.send({ status: "pending" });
+    // Resolve to a single id we can use against `purchases.provider_order_id`.
+    let providerOrderId: string | null = paymentId;
+    if (!providerOrderId && checkoutId) {
+      try {
+        const { polarClient } = await import("../services/polar.js");
+        const polar = polarClient();
+        const page = await polar.orders.list({ checkoutId, limit: 1 });
+        const items = page.result?.items ?? [];
+        providerOrderId = items[0]?.id ?? null;
+      } catch {
+        // Polar call failed (likely because POLAR_ACCESS_TOKEN is empty
+        // post-migration). The webhook may still resolve later, so
+        // surface a `pending` rather than a hard error.
+        return reply.send({ status: "pending" });
+      }
     }
-
-    if (!orderId) {
+    if (!providerOrderId) {
       return reply.send({ status: "pending" });
     }
 
     const { data, error } = await supabaseAdmin
       .from("purchases")
       .select("status, credits, package_id, user_id")
-      .eq("polar_order_id", orderId)
+      .eq("provider_order_id", providerOrderId)
       .maybeSingle();
 
     if (error) {
