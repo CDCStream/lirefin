@@ -70,6 +70,16 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  // Explicit icons: Chrome probes /favicon.ico first — a malformed auto-generated ICO
+  // renders as the generic globe. public/favicon.ico is a PNG-derived multi-size ICO.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon-128.png", type: "image/png", sizes: "128x128" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export const viewport: Viewport = {
