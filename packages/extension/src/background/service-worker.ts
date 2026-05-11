@@ -326,7 +326,24 @@ chrome.runtime.onMessage.addListener((message: ExtensionMessage, sender, sendRes
   if (message.type === MSG.OPEN_SIDE_PANEL) {
     const target = message.tabId ?? tabId;
     if (typeof target === "number") {
-      void openSidePanel(target);
+      // CRITICAL: call chrome.sidePanel.open() SYNCHRONOUSLY in this listener
+      // to preserve the user-gesture context that the content script passed
+      // through the message. Delegating to an async helper schedules the
+      // open() call in a later microtask, which Chrome considers gesture-
+      // less and silently refuses. setOptions() is gesture-free, so we let
+      // it run separately via .then() chains.
+      chrome.sidePanel
+        .open({ tabId: target })
+        .catch((err) => console.warn("[Lirefin] sidePanel.open failed", err));
+      chrome.sidePanel
+        .setOptions({
+          tabId: target,
+          path: "src/sidepanel/index.html",
+          enabled: true,
+        })
+        .catch((err) =>
+          console.warn("[Lirefin] sidePanel.setOptions failed", err),
+        );
     }
     sendResponse({ ok: true });
     return false;
