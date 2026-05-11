@@ -9,8 +9,9 @@ const inter = Inter({
   display: "swap",
 });
 
+// Set NEXT_PUBLIC_SITE_URL on Vercel to match your canonical host (www vs apex).
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://lirefin.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lirefin.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -70,8 +71,8 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  // Explicit icons: Chrome probes /favicon.ico first — a malformed auto-generated ICO
-  // renders as the generic globe. public/favicon.ico is a PNG-derived multi-size ICO.
+  // Explicit icons (+ app/favicon.ico): Next derives /favicon.ico from app/icon.png when
+  // app/favicon.ico is missing — that generated ICO (~25KB) breaks in Chrome/Vercel tab UI.
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
