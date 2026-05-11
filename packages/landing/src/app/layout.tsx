@@ -13,6 +13,11 @@ const inter = Inter({
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lirefin.com";
 
+/** Google Search Console (HTML meta). Prefer env on Vercel; fallback avoids empty builds. */
+const googleSiteVerification =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() ||
+  "FdF-IgloUCx3YN5MLHzDnwo_-uUdL1A3ffNkWAOduT8";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -70,6 +75,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
       "max-video-preview": -1,
     },
+  },
+  verification: {
+    google: googleSiteVerification,
   },
   // Explicit icons (+ app/favicon.ico): Next derives /favicon.ico from app/icon.png when
   // app/favicon.ico is missing — that generated ICO (~25KB) breaks in Chrome/Vercel tab UI.

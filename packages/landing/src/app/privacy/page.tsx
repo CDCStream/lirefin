@@ -189,23 +189,25 @@ export default function PrivacyPage() {
         </p>
         <h3>4.2 Optional analytics and performance</h3>
         <p>
-          If you click <strong>Accept</strong>, we load{" "}
-          <strong>Vercel Web Analytics</strong> and{" "}
-          <strong>Vercel Speed Insights</strong> on this site. They give us
-          aggregate page views, performance metrics, and error signals. We do
-          not use these tools for behavioural advertising or cross-site
-          profiling.
+          If you click <strong>Accept</strong>, we may load{" "}
+          <strong>Vercel Web Analytics</strong>,{" "}
+          <strong>Vercel Speed Insights</strong>, and—when configured for this
+          deployment—<strong>Google Analytics&nbsp;4</strong> (Google Tag) and{" "}
+          <strong>Ahrefs Web Analytics</strong>. These give us aggregate page
+          views, performance metrics, and traffic insight. We do not use these
+          tools for behavioural advertising or cross-site profiling.
         </p>
         <p>
           If you click <strong>Decline optional</strong>, we do not load these
           scripts. You can revisit your choice any time using{" "}
           <strong>Cookie settings</strong> in the footer.
         </p>
-        <h3>4.3 Relationship to Vercel</h3>
+        <h3>4.3 Sub-processors</h3>
         <p>
-          When enabled, analytics events are processed under Vercel&apos;s
-          terms and privacy policies. We minimise data and do not sell your
-          personal information.
+          When enabled, analytics events are processed under each
+          vendor&apos;s terms and privacy notices (including Vercel, Google when
+          GA4 is configured, and Ahrefs when Web Analytics is configured). We
+          minimise data and do not sell your personal information.
         </p>
         <p>
           For visitors in the EEA, UK, Switzerland, or where similar rules

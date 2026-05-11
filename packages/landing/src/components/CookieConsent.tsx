@@ -2,8 +2,13 @@
 
 import { startTransition, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const ahrefsWebAnalyticsKey =
+  process.env.NEXT_PUBLIC_AHREFS_WEB_ANALYTICS_KEY;
 
 const STORAGE_KEY = "lirefin_consent_v1";
 
@@ -75,6 +80,29 @@ export function ConsentBannerAndAnalytics() {
         <>
           <Analytics />
           <SpeedInsights />
+          {gaMeasurementId ? (
+            <>
+              <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaMeasurementId)}`}
+                strategy="afterInteractive"
+              />
+              <Script id="lirefin-ga4" strategy="afterInteractive">
+                {`
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${gaMeasurementId}', { anonymize_ip: true });
+                `}
+              </Script>
+            </>
+          ) : null}
+          {ahrefsWebAnalyticsKey ? (
+            <Script
+              src="https://analytics.ahrefs.com/analytics.js"
+              strategy="afterInteractive"
+              data-key={ahrefsWebAnalyticsKey}
+            />
+          ) : null}
         </>
       ) : null}
 
@@ -94,9 +122,9 @@ export function ConsentBannerAndAnalytics() {
                 Cookies on lirefin.com
               </p>
               <p className="mt-1.5">
-                We use optional, privacy-friendly analytics (Vercel Web Analytics
-                and Speed Insights) to see aggregate traffic and performance—only
-                if you accept. We don&apos;t use them for ads. See our{" "}
+                With your consent we may load Vercel Web Analytics and Speed Insights,
+                and—if configured—Google Analytics&nbsp;4 and Ahrefs Web Analytics for
+                aggregate traffic insight. We don&apos;t use them for ads. See our{" "}
                 <Link
                   href="/privacy#cookies-lirefin"
                   className="font-medium text-brand-600 underline underline-offset-2 hover:text-brand-500 dark:text-brand-400"
