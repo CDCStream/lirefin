@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { startTransition, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -53,10 +53,12 @@ export function ConsentBannerAndAnalytics() {
 
   useEffect(() => {
     const stored = readStored();
-    setHasRecord(stored !== null);
-    setAnalytics(stored?.analytics ?? false);
-    setHydrated(true);
-    if (!stored) setManagerOpen(true);
+    startTransition(() => {
+      setHasRecord(stored !== null);
+      setAnalytics(stored?.analytics ?? false);
+      setHydrated(true);
+      if (!stored) setManagerOpen(true);
+    });
   }, []);
 
   useEffect(() => {
