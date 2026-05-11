@@ -9,7 +9,7 @@ if (BACKEND_URL) extraHosts.push(`${BACKEND_URL.replace(/\/$/, "")}/*`);
 
 export default defineManifest({
   manifest_version: 3,
-  name: "Lirefin — AI Financial News Interpreter",
+  name: "Lirefin — AI Financial News & Articles Interpreter",
   short_name: "Lirefin",
   version: "0.1.6",
   description:

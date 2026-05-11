@@ -50,7 +50,7 @@ Quick mental model so you can answer reviewer follow-ups confidently.
 
 1. Click **New item** in the developer dashboard.
 2. Upload the latest ZIP from `dist-zip/`. Verify it picks up:
-   - Name: **Lirefin — AI Financial News Interpreter**
+   - Name: **Lirefin — AI Financial News & Articles Interpreter**
    - Version: **0.1.6**
    - Description: matches the manifest description below.
 
@@ -61,7 +61,7 @@ Quick mental model so you can answer reviewer follow-ups confidently.
 ### Title (auto-filled from manifest)
 
 ```
-Lirefin — AI Financial News Interpreter
+Lirefin — AI Financial News & Articles Interpreter
 ```
 
 ### Summary / short description (132 chars from manifest)
