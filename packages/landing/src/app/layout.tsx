@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { AhrefsAnalyticsScript } from "@/components/AhrefsAnalyticsScript";
 import { ConsentBannerAndAnalytics } from "@/components/CookieConsent";
 import { Ga4ConsentScripts } from "@/components/Ga4ConsentScripts";
 import "./globals.css";
@@ -110,6 +111,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Ga4ConsentScripts />
+        <AhrefsAnalyticsScript />
         {children}
         <ConsentBannerAndAnalytics />
       </body>

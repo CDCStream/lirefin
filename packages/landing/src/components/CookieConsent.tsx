@@ -2,7 +2,6 @@
 
 import { startTransition, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { gaMeasurementId } from "@/lib/analytics";
@@ -22,9 +21,6 @@ function emitGaConsent(granted: boolean) {
     ad_personalization: "denied",
   });
 }
-const ahrefsWebAnalyticsKey =
-  process.env.NEXT_PUBLIC_AHREFS_WEB_ANALYTICS_KEY;
-
 const STORAGE_KEY = "lirefin_consent_v1";
 
 export const COOKIE_SETTINGS_EVENT = "lirefin-open-cookie-settings";
@@ -49,8 +45,8 @@ function readStored(): ConsentPayload | null {
 }
 
 /**
- * GA4 loads from the root layout with Consent Mode defaults (analytics denied).
- * Cookie choices update GA consent plus gate Vercel Analytics / Speed Insights.
+ * GA4 + Ahrefs load from the root layout (Ahrefs/verification tooling needs the script tag).
+ * Consent banner updates GA4 Consent Mode and gates optional Vercel Analytics / Speed Insights.
  */
 export function ConsentBannerAndAnalytics() {
   const [hydrated, setHydrated] = useState(false);
@@ -121,13 +117,6 @@ export function ConsentBannerAndAnalytics() {
         <>
           <Analytics />
           <SpeedInsights />
-          {ahrefsWebAnalyticsKey ? (
-            <Script
-              src="https://analytics.ahrefs.com/analytics.js"
-              strategy="afterInteractive"
-              data-key={ahrefsWebAnalyticsKey}
-            />
-          ) : null}
         </>
       ) : null}
 
@@ -147,9 +136,10 @@ export function ConsentBannerAndAnalytics() {
                 Cookies on lirefin.com
               </p>
               <p className="mt-1.5">
-                With your consent we may load Vercel Web Analytics and Speed Insights,
-                and—if configured—Google Analytics&nbsp;4 and Ahrefs Web Analytics for
-                aggregate traffic insight. We don&apos;t use them for ads. See our{" "}
+                This site loads Google Analytics&nbsp;4 with Consent Mode (analytics
+                storage denied until you accept) plus Ahrefs Web Analytics for aggregate
+                traffic. If you choose <strong>Accept</strong>, we also enable Vercel Web
+                Analytics and Speed Insights. We don&apos;t use them for ads. See our{" "}
                 <Link
                   href="/privacy#cookies-lirefin"
                   className="font-medium text-brand-600 underline underline-offset-2 hover:text-brand-500 dark:text-brand-400"

@@ -187,33 +187,36 @@ export default function PrivacyPage() {
           visit. This processing is limited to what is necessary to respect your
           preference.
         </p>
-        <h3>4.2 Optional analytics and performance</h3>
+        <h3>4.2 Analytics and performance</h3>
         <p>
-          If you click <strong>Accept</strong>, we may load{" "}
-          <strong>Vercel Web Analytics</strong>,{" "}
-          <strong>Vercel Speed Insights</strong>, and—when configured for this
-          deployment—<strong>Google Analytics&nbsp;4</strong> (Google Tag) and{" "}
-          <strong>Ahrefs Web Analytics</strong>. These give us aggregate page
-          views, performance metrics, and traffic insight. We do not use these
-          tools for behavioural advertising or cross-site profiling.
+          We load lightweight scripts on the marketing pages for{" "}
+          <strong>Google Analytics&nbsp;4</strong> (Consent Mode defaults: analytics storage
+          is denied until you choose <strong>Accept</strong>; you can revoke later via cookie
+          settings) and{" "}
+          <strong>Ahrefs Web Analytics</strong> so we can see aggregate traffic and confirm
+          third-party dashboards recognize the snippet.
         </p>
         <p>
-          If you click <strong>Decline optional</strong>, we do not load these
-          scripts. You can revisit your choice any time using{" "}
-          <strong>Cookie settings</strong> in the footer.
+          If you click <strong>Accept</strong>, we also enable{" "}
+          <strong>Vercel Web Analytics</strong> and <strong>Vercel Speed Insights</strong> for
+          additional aggregate performance telemetry.
+        </p>
+        <p>
+          If you click <strong>Decline optional</strong>, we keep GA4&apos;s analytics storage in
+          the default denied state and we do not load Vercel&apos;s analytics scripts. You
+          can revisit your choice any time using <strong>Cookie settings</strong> in the footer.
         </p>
         <h3>4.3 Sub-processors</h3>
         <p>
-          When enabled, analytics events are processed under each
-          vendor&apos;s terms and privacy notices (including Vercel, Google when
-          GA4 is configured, and Ahrefs when Web Analytics is configured). We
-          minimise data and do not sell your personal information.
+          When enabled, analytics events are processed under each vendor&apos;s
+          terms (including Ahrefs Web Analytics present on pages, Google when GA4 loads,
+          Vercel when you accept optional analytics tools). We minimise data and do not
+          sell your personal information.
         </p>
         <p>
-          For visitors in the EEA, UK, Switzerland, or where similar rules
-          apply, we activate these optional tools only based on your
-          consent—for example under GDPR Article&nbsp;6(1)(a)—and only through
-          the choice you make in our cookie banner.
+          For visitors in the EEA, UK, Switzerland, or where similar rules apply, GA4
+          runs with refused analytics measurement until you opt in via the banner, and{" "}
+          we load Vercel Web Analytics plus Speed Insights only after that choice.
         </p>
       </section>
 
