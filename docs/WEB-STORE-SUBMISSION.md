@@ -325,26 +325,31 @@ Capture at exactly 1280×800. Easiest method on Windows:
 
 Recommended captures:
 
-#### Shot 1 — Hero (the money shot)
+#### Shot 1 — Hero (the money shot, FIRST in the listing)
 
-- Open <https://www.reuters.com/markets/> and click a recent
-  high-relevance article (something with NVDA, AAPL, MSFT, or TSM in
-  the headline).
-- The extension's floating Analyze button is visible in the lower-right
-  of the article.
+This is the screenshot Google shows in search results. Spend the most
+time on this one.
+
+- Open <https://www.reuters.com/markets/> and click a recent article
+  with high portfolio relevance (something with NVDA, AAPL, MSFT, AMD,
+  TSM, or ASML in the headline). Earnings recaps work best because the
+  output is colourful (mix of bullish/neutral/bearish).
 - Side panel is open beside the article showing a 3- to 4-asset
   breakdown — at least one bullish, one neutral, one bearish for visual
   contrast.
-- Top-left text overlay (use Figma or Canva): **"Read the market,
-  instantly."**
+- The floating Analyze button is visible in the lower-right of the
+  article (still pulsing or settled is fine).
+- Optional caption overlay (top or bottom strip, 80px tall, navy
+  background `#0a1f44`, white text):
+  **"AI explains all financial news and articles — instantly."**
 
 #### Shot 2 — Side panel detail
 
-- Side panel only, full height.
+- Side panel only, full viewport height.
 - One asset card expanded showing: sentiment pill, confidence bar,
   reasoning paragraph, and the supporting quote in italic.
 - 2–3 collapsed cards below.
-- Overlay: **"Per-ticker breakdown with cited reasoning."**
+- Optional caption: **"Per-ticker breakdown with cited reasoning."**
 
 #### Shot 3 — Settings & portfolio
 
@@ -353,31 +358,38 @@ Recommended captures:
   `SAP.DE` and `ASML.AS`, one Asian like `7203.T`, one ETF like `SPY`).
 - Search box has a partial query like `nvi` with the autocomplete
   visible.
-- Overlay: **"Global ticker support — US, Europe, Asia."**
+- Optional caption: **"Global ticker support — US, Europe, Asia."**
 
 #### Shot 4 — 13 languages
 
-- Same article analyzed twice, side-by-side composition (use Figma to
-  glue two screenshots together).
+- Same article analyzed twice, side-by-side composition (use Figma /
+  Canva / PowerPoint to glue two screenshots together).
 - Left: output in English. Right: output in Turkish (or Japanese for
   visual variety).
-- Overlay: **"13 output languages."**
+- Optional caption: **"Reads any language. Outputs in 13."**
 
 #### Shot 5 — Privacy / dismiss FAB
 
 - Article page with the floating Analyze button visible.
 - The dismiss menu open showing "Hide on this site / Hide on all sites".
-- Overlay: **"Polite by default — hide it any time."**
+- Optional caption: **"Polite by default — hide it any time."**
 
 > Anti-pattern: do NOT photoshop fake numbers or fake portfolio
 > performance. Reviewers can tell, and it crosses into `Red Nickel`
 > deceptive territory.
 
+> Caption overlays are OPTIONAL. Many top-tier extensions (1Password,
+> Grammarly, Dark Reader) ship raw app screenshots with no caption at
+> all and still convert well. If overlays feel rushed, ship without —
+> the listing description does the heavy lifting.
+
 ### Promo tile (440×280)
 
-A simple emerald background with the Lirefin wordmark and the tagline
-"Read the market, instantly." is enough. Use any vector tool (Figma,
-Canva). Export PNG at exactly 440×280.
+A simple navy background (`#0a1f44`) with the Lirefin wordmark in
+white and a small emerald (`#10b981`) accent (e.g., a thin gradient
+underline or the analysis bar from the side panel preview) plus the
+tagline **"AI explains all financial news — instantly."** is enough.
+Use any vector tool (Figma, Canva). Export PNG at exactly 440×280.
 
 ---
 
