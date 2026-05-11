@@ -71,14 +71,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  icons: {
-    icon: [
-      { url: "/icon-32.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon-128.png", sizes: "128x128", type: "image/png" },
-    ],
-    shortcut: "/favicon.ico",
-    apple: "/icon-128.png",
-  },
 };
 
 export const viewport: Viewport = {
