@@ -58,30 +58,41 @@ export function PopupApp() {
   const hasPortfolio = settings.portfolio.length > 0;
   const canPick = authed === true && hasPortfolio;
 
-  const onPickText = async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (typeof tab?.id !== "number") return;
-    void chrome.runtime.sendMessage({
-      type: MSG.OPEN_SIDE_PANEL,
-      tabId: tab.id,
-    } satisfies ExtensionMessage);
-    setTimeout(() => {
-      void chrome.runtime.sendMessage({
-        type: MSG.START_PICK_MODE,
-        tabId: tab.id,
-      } satisfies ExtensionMessage);
-      window.close();
-    }, 150);
+  // Chrome MV3 quirk: `chrome.sidePanel.open()` must be called within the
+  // same synchronous turn as the user gesture that triggered it. Crossing
+  // an `await` (e.g. tabs.query) or a `sendMessage` round-trip loses the
+  // gesture context and Chrome silently refuses. So both popup buttons now
+  // call `chrome.sidePanel.open()` directly with `WINDOW_ID_CURRENT` — that
+  // value (-2) is the *only* identifier we can use without first awaiting
+  // a tab/window query. Then we kick the start-pick-mode message AFTER, so
+  // even if the side panel hasn't fully opened yet, the content script
+  // gets the signal.
+  const openSidePanelNow = (): Promise<void> => {
+    return chrome.sidePanel
+      .open({ windowId: chrome.windows.WINDOW_ID_CURRENT })
+      .catch((err: unknown) => {
+        console.warn("[Lirefin] popup -> sidePanel.open failed", err);
+      });
   };
 
-  const onOpenSidePanel = async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (typeof tab?.id !== "number") return;
-    void chrome.runtime.sendMessage({
-      type: MSG.OPEN_SIDE_PANEL,
-      tabId: tab.id,
-    } satisfies ExtensionMessage);
-    window.close();
+  const onPickText = () => {
+    void openSidePanelNow().then(async () => {
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      if (typeof tab?.id === "number") {
+        void chrome.runtime.sendMessage({
+          type: MSG.START_PICK_MODE,
+          tabId: tab.id,
+        } satisfies ExtensionMessage);
+      }
+      window.close();
+    });
+  };
+
+  const onOpenSidePanel = () => {
+    void openSidePanelNow().then(() => window.close());
   };
 
   const onOpenOptions = () => {

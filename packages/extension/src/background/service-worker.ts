@@ -70,15 +70,26 @@ async function emitAnalysisEvent(
 }
 
 async function openSidePanel(tabId: number) {
+  // Chrome MV3 only honours `sidePanel.open()` when called within the user
+  // gesture that triggered it. The gesture is preserved through ONE
+  // sendMessage hop (Chrome 116+), but each `await` we sit on consumes more
+  // of it. So we open FIRST (using the manifest's default_path) and only
+  // tweak setOptions afterwards — by then we already have a side panel.
+  try {
+    await chrome.sidePanel.open({ tabId });
+  } catch (err) {
+    console.warn("[Lirefin] sidePanel.open failed", err);
+  }
+
   try {
     await chrome.sidePanel.setOptions({
       tabId,
       path: "src/sidepanel/index.html",
       enabled: true,
     });
-    await chrome.sidePanel.open({ tabId });
   } catch (err) {
-    console.warn("[Lirefin] could not open side panel", err);
+    // Non-fatal — manifest's default_path covers us.
+    console.warn("[Lirefin] sidePanel.setOptions failed", err);
   }
 }
 
