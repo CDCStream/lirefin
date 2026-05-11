@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-const lastUpdated = "May 10, 2026";
+const lastUpdated = "May 11, 2026";
 
 export default function PrivacyPage() {
   return (
@@ -173,8 +173,50 @@ export default function PrivacyPage() {
         </p>
       </section>
 
+      <section id="cookies-lirefin">
+        <h2>4. Cookies and similar technologies</h2>
+        <p>
+          This section describes our public marketing website at{" "}
+          <Link href="/">lirefin.com</Link> only. It does not cover cookies
+          placed by the Chrome extension itself.
+        </p>
+        <h3>4.1 Essential storage</h3>
+        <p>
+          We save your cookie choice (for example Accept or Decline optional) in{" "}
+          <code>localStorage</code> so we do not show the banner again on every
+          visit. This processing is limited to what is necessary to respect your
+          preference.
+        </p>
+        <h3>4.2 Optional analytics and performance</h3>
+        <p>
+          If you click <strong>Accept</strong>, we load{" "}
+          <strong>Vercel Web Analytics</strong> and{" "}
+          <strong>Vercel Speed Insights</strong> on this site. They give us
+          aggregate page views, performance metrics, and error signals. We do
+          not use these tools for behavioural advertising or cross-site
+          profiling.
+        </p>
+        <p>
+          If you click <strong>Decline optional</strong>, we do not load these
+          scripts. You can revisit your choice any time using{" "}
+          <strong>Cookie settings</strong> in the footer.
+        </p>
+        <h3>4.3 Relationship to Vercel</h3>
+        <p>
+          When enabled, analytics events are processed under Vercel&apos;s
+          terms and privacy policies. We minimise data and do not sell your
+          personal information.
+        </p>
+        <p>
+          For visitors in the EEA, UK, Switzerland, or where similar rules
+          apply, we activate these optional tools only based on your
+          consent—for example under GDPR Article&nbsp;6(1)(a)—and only through
+          the choice you make in our cookie banner.
+        </p>
+      </section>
+
       <section>
-        <h2>4. Data retention</h2>
+        <h2>5. Data retention</h2>
         <ul>
           <li>
             Account profile: kept for the lifetime of your account; deleted
@@ -205,7 +247,7 @@ export default function PrivacyPage() {
       </section>
 
       <section>
-        <h2>5. Your rights</h2>
+        <h2>6. Your rights</h2>
         <p>
           Depending on where you live, you may have the right to access,
           correct, export, or delete the personal information we hold about
@@ -238,7 +280,7 @@ export default function PrivacyPage() {
       </section>
 
       <section>
-        <h2>6. Children</h2>
+        <h2>7. Children</h2>
         <p>
           Lirefin is not directed at children under 13 (or under 16 in the
           EU). We do not knowingly collect personal information from
@@ -248,7 +290,7 @@ export default function PrivacyPage() {
       </section>
 
       <section>
-        <h2>7. International data transfers</h2>
+        <h2>8. International data transfers</h2>
         <p>
           We are based outside the EU, and our sub-processors are located in
           the United States and the European Union. By using Lirefin you
@@ -259,7 +301,7 @@ export default function PrivacyPage() {
       </section>
 
       <section>
-        <h2>8. Security</h2>
+        <h2>9. Security</h2>
         <p>
           We use TLS in transit, encrypted-at-rest storage on Supabase,
           row-level security policies, principle-of-least-privilege backend
@@ -270,7 +312,7 @@ export default function PrivacyPage() {
       </section>
 
       <section>
-        <h2>9. Changes to this policy</h2>
+        <h2>10. Changes to this policy</h2>
         <p>
           If we materially change how we handle your data we will update this
           page and, when the change is significant, notify you by email or
@@ -280,7 +322,7 @@ export default function PrivacyPage() {
       </section>
 
       <section>
-        <h2>10. Contact</h2>
+        <h2>11. Contact</h2>
         <p>
           Questions, complaints, or rights requests:{" "}
           <a href={`mailto:${SITE.legalEmail}`}>{SITE.legalEmail}</a>. See

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { CookieSettingsButton } from "@/components/CookieConsent";
 import { FOOTER_LINKS, SITE } from "@/lib/config";
 
 export function Footer() {
@@ -59,6 +60,11 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <CookieSettingsButton className="text-muted-foreground transition-colors hover:text-navy-800 dark:hover:text-white">
+                Cookie settings
+              </CookieSettingsButton>
+            </li>
           </ul>
         </div>
       </div>
