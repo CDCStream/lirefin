@@ -5,8 +5,23 @@ import Link from "next/link";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { gaMeasurementId } from "@/lib/analytics";
 
-const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+function emitGaConsent(granted: boolean) {
+  if (!gaMeasurementId || typeof window === "undefined") return;
+  window.gtag?.("consent", "update", {
+    analytics_storage: granted ? "granted" : "denied",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+  });
+}
 const ahrefsWebAnalyticsKey =
   process.env.NEXT_PUBLIC_AHREFS_WEB_ANALYTICS_KEY;
 
@@ -34,8 +49,8 @@ function readStored(): ConsentPayload | null {
 }
 
 /**
- * GDPR / ePrivacy-friendly gate: Vercel Analytics + Speed Insights load only
- * after explicit opt-in. Consent is stored in localStorage (marketing site only).
+ * GA4 loads from the root layout with Consent Mode defaults (analytics denied).
+ * Cookie choices update GA consent plus gate Vercel Analytics / Speed Insights.
  */
 export function ConsentBannerAndAnalytics() {
   const [hydrated, setHydrated] = useState(false);
@@ -50,6 +65,7 @@ export function ConsentBannerAndAnalytics() {
       decidedAt: new Date().toISOString(),
     };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    emitGaConsent(allow);
     setAnalytics(allow);
     setHasRecord(true);
     setManagerOpen(false);
@@ -67,6 +83,31 @@ export function ConsentBannerAndAnalytics() {
   }, []);
 
   useEffect(() => {
+    const stored = readStored();
+    if (stored === null || !gaMeasurementId) return;
+
+    const analyticsAllowed = stored.analytics;
+
+    let cancelled = false;
+    const deadline = Date.now() + 4000;
+
+    function tryApply() {
+      if (cancelled) return;
+      if (typeof window.gtag === "function") {
+        emitGaConsent(analyticsAllowed);
+        return;
+      }
+      if (Date.now() < deadline)
+        window.requestAnimationFrame(tryApply);
+    }
+
+    tryApply();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     const onOpen = () => setManagerOpen(true);
     window.addEventListener(COOKIE_SETTINGS_EVENT, onOpen);
     return () => window.removeEventListener(COOKIE_SETTINGS_EVENT, onOpen);
@@ -80,22 +121,6 @@ export function ConsentBannerAndAnalytics() {
         <>
           <Analytics />
           <SpeedInsights />
-          {gaMeasurementId ? (
-            <>
-              <Script
-                src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaMeasurementId)}`}
-                strategy="afterInteractive"
-              />
-              <Script id="lirefin-ga4" strategy="afterInteractive">
-                {`
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${gaMeasurementId}', { anonymize_ip: true });
-                `}
-              </Script>
-            </>
-          ) : null}
           {ahrefsWebAnalyticsKey ? (
             <Script
               src="https://analytics.ahrefs.com/analytics.js"
