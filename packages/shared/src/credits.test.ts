@@ -94,6 +94,13 @@ describe("CREDIT_PACKAGES", () => {
       expect(p.polarProductEnv).toMatch(/^POLAR_PRODUCT_[A-Z]+$/);
     }
   });
+
+  it("each package exposes customer-facing descriptions", () => {
+    for (const p of CREDIT_PACKAGES) {
+      expect(p.description.trim().length).toBeGreaterThan(20);
+      expect(p.longDescription.trim().length).toBeGreaterThan(60);
+    }
+  });
 });
 
 describe("getPackage", () => {

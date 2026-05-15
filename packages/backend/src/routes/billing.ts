@@ -60,6 +60,8 @@ export async function billingRoute(app: FastifyInstance) {
         credits: p.credits,
         bonusPct: p.bonusPct,
         unlimited: p.unlimited === true,
+        description: p.description,
+        longDescription: p.longDescription,
         available: available.has(p.id),
       })),
     };

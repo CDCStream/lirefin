@@ -823,13 +823,16 @@ function BillingSection({
                     / {t("perMonthShort", uiLang)}
                   </span>
                 </div>
-                <div className="text-xs text-slate-400">
+                <div className="mt-1 text-xs text-slate-400">
                   {p.credits.toLocaleString()} {t("creditsPerMonth", uiLang)}
                   {isUnlimited && (
                     <span className="ml-1 text-brand-400">
                       · {t("unlimitedLabel", uiLang)}
                     </span>
                   )}
+                </div>
+                <div className="mt-2 text-xs text-slate-400 leading-snug">
+                  {p.description}
                 </div>
                 {isActive ? (
                   <button

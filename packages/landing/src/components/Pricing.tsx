@@ -22,14 +22,6 @@ function paidFeatureLines(pkg: CreditPackage): string[] {
   ];
 }
 
-const paidDescriptions: Record<CreditPackage["id"], string> = {
-  starter: "Try paid credits without a heavy commitment.",
-  standard: "Steady reader — a handful of analyses most days.",
-  pro: "Active investor following many headlines and holdings.",
-  power: "High volume — teams, desks, or very heavy personal use.",
-  unlimited: "Maximum recurring pool — for always-on workflows.",
-};
-
 type PricingTier =
   | {
       key: string;
@@ -63,7 +55,7 @@ const paidTiers: PricingTier[] = CREDIT_PACKAGES.map((pkg) => ({
   name: pkg.label,
   priceLabel: `$${pkg.usd}`,
   periodLabel: "/ month",
-  description: paidDescriptions[pkg.id],
+  description: pkg.description,
   features: paidFeatureLines(pkg),
   cta: "Install · subscribe inside",
   highlight: pkg.id === "standard",

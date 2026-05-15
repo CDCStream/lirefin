@@ -346,6 +346,8 @@ export interface ApiPackage {
   credits: number;
   bonusPct: number;
   unlimited?: boolean;
+  description: string;
+  longDescription: string;
   available: boolean;
 }
 

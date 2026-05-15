@@ -80,6 +80,13 @@ export interface CreditPackage {
     | "DODO_PRODUCT_PRO"
     | "DODO_PRODUCT_POWER"
     | "DODO_PRODUCT_UNLIMITED";
+  /** One sentence — landing cards & extension checkout grid. */
+  description: string;
+  /**
+   * Full paragraph — paste into Dodo product description / storefront.
+   * Not shown in the compressed extension tiles by default (use `description`).
+   */
+  longDescription: string;
 }
 
 export const CREDIT_PACKAGES: readonly CreditPackage[] = [
@@ -89,6 +96,10 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     usd: 5,
     credits: 350,
     bonusPct: 0,
+    description:
+      "Light weekly rhythm — dip into paid Claude depth without a heavy bill.",
+    longDescription:
+      "Monthly subscription renewing each billing period. Includes 350 Lirefin analysis credits refreshed each cycle (see checkout and Terms for details). Turns selected financial article text into portfolio-aware bullish, neutral, or bearish summaries with citations — informational only; not investment advice.",
     polarProductEnv: "POLAR_PRODUCT_STARTER",
     dodoProductEnv: "DODO_PRODUCT_STARTER",
   },
@@ -98,6 +109,10 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     usd: 10,
     credits: 750,
     bonusPct: 7,
+    description:
+      "Daily reader — enough runway for habitual headlines and weekends.",
+    longDescription:
+      "For investors who scan markets often and want on-demand Claude commentary beside the articles they already open. Grants 750 credits per renewal month (+~7% more credits vs Starter economics). Hosted checkout via Dodo; cancel or manage in Extension → Subscription. Output is informational, not personalised investment advice.",
     polarProductEnv: "POLAR_PRODUCT_STANDARD",
     dodoProductEnv: "DODO_PRODUCT_STANDARD",
   },
@@ -107,6 +122,10 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     usd: 25,
     credits: 2000,
     bonusPct: 14,
+    description:
+      "Active holders — overlapping tickers and a steady headline diet.",
+    longDescription:
+      "Built for portfolios with broad exposure across sectors and recurring news flow you actually read. Provides 2000 recurring credits/month for Claude-backed sentiment, reasoning, and confidence cues tied strictly to excerpts you analyse. Suitable for discretionary research—not order routing or broker replacement.",
     polarProductEnv: "POLAR_PRODUCT_PRO",
     dodoProductEnv: "DODO_PRODUCT_PRO",
   },
@@ -116,6 +135,10 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     usd: 50,
     credits: 4500,
     bonusPct: 22,
+    description:
+      "High throughput readers, desks, or research-heavy deep dives.",
+    longDescription:
+      "Premium monthly allotment (4,500 credits) for heavy daily workloads: analysts, disciplined retail power users, or anyone running many simultaneous tickers across sources. Charges renew automatically via Dodo; credits count down per analysis workload. Claude output may omit material facts—always corroborate with primary sources.",
     polarProductEnv: "POLAR_PRODUCT_POWER",
     dodoProductEnv: "DODO_PRODUCT_POWER",
   },
@@ -126,6 +149,10 @@ export const CREDIT_PACKAGES: readonly CreditPackage[] = [
     credits: 10000,
     bonusPct: 43,
     unlimited: true,
+    description:
+      "Maximum recurring pool branded Unlimited — flagship usage envelope.",
+    longDescription:
+      "Top recurring tier pooling 10,000 credits each renewal cycle under the Unlimited marketing label. Pricing still reflects pooled usage—see in-app estimator before analysing long articles or large portfolios. Best for predictable high volume; downgrade anytime per subscription rules. Outputs are experimental AI—not regulated financial guidance.",
     polarProductEnv: "POLAR_PRODUCT_UNLIMITED",
     dodoProductEnv: "DODO_PRODUCT_UNLIMITED",
   },
