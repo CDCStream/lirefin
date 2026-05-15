@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  transpilePackages: ["@fni/shared"],
   images: {
     formats: ["image/avif", "image/webp"],
   },

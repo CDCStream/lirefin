@@ -1,8 +1,8 @@
 # Lirefin Launch Roadmap
 
-> **Last updated:** 2026-05-10  
+> **Last updated:** 2026-05-11  
 > **Owner:** @CDCStream  
-> **Status:** Phase 0 (waiting on Dodo verification)
+> **Status:** Phase 1 (Dodo live — wire production keys + smoke test → Web Store)
 
 Single-document launch plan covering the path from "Dodo TEST mode works
 end-to-end" all the way through Product Hunt and post-launch growth.
@@ -21,9 +21,10 @@ dependency.
 | Database (Supabase) | Migration 003 applied |
 | Extension v0.1.6 | Local build green, billing flow verified |
 | Landing (lirefin.com) | Live on Vercel, privacy/terms/contact pages shipped |
-| Dodo verification | **Pending** |
-| Web Store submission | Blocked on Dodo (Plan C: live billing first) |
-| Public launch | Blocked on both approvals |
+| Dodo verification | **Live — payments active** |
+| Production billing env | Flip `DODO_ENV=live_mode` + live PIDs when ready |
+| Web Store submission | **Next** — after one real charge + refund drill |
+| Public launch | After Web Store approval + billing-enabled extension zip |
 
 ---
 
@@ -140,13 +141,17 @@ Phase exit criteria: real $5 charge succeeds end-to-end and is refunded.
 
 ### 1.1 Create live products (30 min, you)
 
-Recreate the 5 packages in Live Mode (test PIDs are not valid in live):
+Recreate (or reuse) **5 recurring subscription products in Dodo Live** that mirror
+[`packages/shared/src/credits.ts`](../packages/shared/src/credits.ts) — this file is the
+single source of truth:
 
-- Starter — $5/mo · 350 credits
-- Standard — $15/mo · 1,200 credits
-- Pro — $30/mo · 3,000 credits
-- Power — $60/mo · 7,500 credits
-- Unlimited — $120/mo · unlimited
+| Tier | Monthly USD | Credits / month |
+|------|-------------|-----------------|
+| Starter | $5 | 350 |
+| Standard | $10 | 750 |
+| Pro | $25 | 2,000 |
+| Power | $50 | 4,500 |
+| Unlimited | $99 | 10,000 (marketing “Unlimited” pool) |
 
 Paste the 5 live PIDs into the conversation.
 

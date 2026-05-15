@@ -1,55 +1,75 @@
 import { Check } from "lucide-react";
+import {
+  CREDIT_PACKAGES,
+  SIGNUP_BONUS_CREDITS,
+  type CreditPackage,
+} from "@fni/shared";
 import { SITE } from "@/lib/config";
 
-const tiers = [
-  {
-    name: "Free",
-    price: "$0",
-    period: "forever",
-    description: "Try the full extension — no credit card required.",
-    cta: "Add to Chrome",
-    ctaHref: SITE.webStoreUrl,
-    highlight: false,
-    features: [
-      "25 free analysis credits on signup",
-      "All 13 output languages",
-      "Side panel + floating button",
-      "Portfolio with up to 50 assets",
-    ],
-  },
-  {
-    name: "Standard",
-    price: "$10",
-    period: "/ month",
-    description: "Everyday reader — covers a few articles a day.",
-    cta: "Coming soon",
-    ctaHref: "#pricing",
-    highlight: true,
-    features: [
-      "750 credits / month",
-      "+7% bonus credits",
-      "Priority queue",
-      "Email support",
-      "All Free plan features",
-    ],
-  },
-  {
-    name: "Pro",
-    price: "$25",
-    period: "/ month",
-    description: "Active investor or analyst tracking many tickers.",
-    cta: "Coming soon",
-    ctaHref: "#pricing",
-    highlight: false,
-    features: [
-      "2,000 credits / month",
-      "+14% bonus credits",
-      "Earnings calendar reader (beta)",
-      "Multi-portfolio support",
-      "All Standard plan features",
-    ],
-  },
-];
+function paidFeatureLines(pkg: CreditPackage): string[] {
+  const creditLine = pkg.unlimited
+    ? `${pkg.credits.toLocaleString()} credits / month · largest pool (“Unlimited” plan)`
+    : `${pkg.credits.toLocaleString()} credits / month`;
+  const bonusLine =
+    pkg.bonusPct > 0
+      ? `≈ ${pkg.bonusPct}% bonus credits vs Starter pricing`
+      : null;
+  return [
+    creditLine,
+    ...(bonusLine ? [bonusLine] : []),
+    "Secure checkout inside the extension (Dodo Payments)",
+    "Portfolio & languages included",
+  ];
+}
+
+const paidDescriptions: Record<CreditPackage["id"], string> = {
+  starter: "Try paid credits without a heavy commitment.",
+  standard: "Steady reader — a handful of analyses most days.",
+  pro: "Active investor following many headlines and holdings.",
+  power: "High volume — teams, desks, or very heavy personal use.",
+  unlimited: "Maximum recurring pool — for always-on workflows.",
+};
+
+type PricingTier =
+  | {
+      key: string;
+      name: string;
+      priceLabel: string;
+      periodLabel: string;
+      description: string;
+      features: string[];
+      cta: string;
+      highlight: boolean;
+    };
+
+const freeTier: PricingTier = {
+  key: "free",
+  name: "Free",
+  priceLabel: "$0",
+  periodLabel: "forever",
+  description:
+    "Full extension — generous starter credits before you subscribe.",
+  features: [
+    `${SIGNUP_BONUS_CREDITS} free analysis credits on signup`,
+    "All 13 output languages · side panel + floating button",
+    "Portfolio up to 50 symbols",
+  ],
+  cta: "Add to Chrome",
+  highlight: false,
+};
+
+const paidTiers: PricingTier[] = CREDIT_PACKAGES.map((pkg) => ({
+  key: pkg.id,
+  name: pkg.label,
+  priceLabel: `$${pkg.usd}`,
+  periodLabel: "/ month",
+  description: paidDescriptions[pkg.id],
+  features: paidFeatureLines(pkg),
+  cta: "Install · subscribe inside",
+  highlight: pkg.id === "standard",
+}));
+
+const tiers: PricingTier[] = [freeTier, ...paidTiers];
 
 export function Pricing() {
   return (
@@ -60,41 +80,43 @@ export function Pricing() {
             Pricing
           </div>
           <h2 className="mt-4 text-balance text-3xl font-semibold tracking-tight text-navy-800 dark:text-white sm:text-5xl">
-            Start free. Upgrade when you read more than you write.
+            Start free. Upgrade when volume picks up.
           </h2>
           <p className="mt-5 text-pretty text-lg text-muted-foreground">
-            Paid plans are launching soon. Until then, every new account ships
-            with 25 free credits — enough to feel out the product.
+            Plans match what the extension offers after you sign in. Billing is
+            live via Dodo — pick a tier in&nbsp;
+            <span className="font-medium text-navy-800 dark:text-navy-100">
+              Extension → Subscription
+            </span>{" "}
+            once Chrome is installed.
           </p>
         </div>
 
-        <div className="mt-16 grid gap-5 md:grid-cols-3">
+        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {tiers.map((tier) => (
             <div
-              key={tier.name}
+              key={tier.key}
               className={`relative flex flex-col rounded-2xl border bg-card p-7 transition-shadow ${
                 tier.highlight
                   ? "border-navy-700/50 shadow-xl shadow-navy-900/10 ring-1 ring-navy-700/10"
                   : "border-border hover:shadow-md"
               }`}
             >
-              {tier.highlight && (
+              {tier.highlight ? (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-navy-800 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-sm dark:bg-white dark:text-navy-900">
                   Most popular
                 </div>
-              )}
+              ) : null}
 
-              <div className="flex items-baseline gap-1">
-                <h3 className="text-lg font-semibold tracking-tight text-navy-800 dark:text-white">
-                  {tier.name}
-                </h3>
-              </div>
+              <h3 className="text-lg font-semibold tracking-tight text-navy-800 dark:text-white">
+                {tier.name}
+              </h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-5xl font-semibold tracking-tight tabular-nums text-navy-800 dark:text-white">
-                  {tier.price}
+                <span className="text-4xl font-semibold tracking-tight tabular-nums text-navy-800 dark:text-white sm:text-5xl">
+                  {tier.priceLabel}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  {tier.period}
+                  {tier.periodLabel}
                 </span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -115,15 +137,12 @@ export function Pricing() {
               </ul>
 
               <a
-                href={tier.ctaHref}
+                href={SITE.webStoreUrl}
                 className={`mt-7 inline-flex h-11 items-center justify-center rounded-full text-sm font-medium transition-colors ${
                   tier.highlight
                     ? "bg-navy-800 text-white hover:bg-navy-900 dark:bg-white dark:text-navy-900 dark:hover:bg-navy-100"
                     : "border border-border bg-card text-navy-700 hover:bg-muted dark:text-navy-100"
                 }`}
-                {...(tier.cta === "Coming soon"
-                  ? { "aria-disabled": true }
-                  : {})}
               >
                 {tier.cta}
               </a>
