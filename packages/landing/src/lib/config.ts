@@ -6,7 +6,8 @@ export const SITE = {
   email: "hello@lirefin.com",
   supportEmail: "support@lirefin.com",
   legalEmail: "legal@lirefin.com",
-  webStoreUrl: "#chrome-web-store-coming-soon",
+  webStoreUrl:
+    "https://chromewebstore.google.com/detail/eipiafniahnjsmoodadcerfmaprclpjj",
   github: "https://github.com/CDCStream/lirefin",
 } as const;
 
