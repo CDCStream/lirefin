@@ -6,7 +6,7 @@ import {
   creditsForUsage,
   estimateCredits,
   getPackage,
-} from "./credits.js";
+} from "./credits";
 
 describe("creditsForUsage", () => {
   it("rounds input tokens up per 1k and weighs output 5x", () => {

@@ -2,8 +2,8 @@ import { z } from "zod";
 import {
   SUPPORTED_LANGUAGE_CODES,
   type SupportedLanguageCode,
-} from "./languages.js";
-import { REGIONS } from "./regions.js";
+} from "./languages";
+import { REGIONS } from "./regions";
 
 export const SentimentSchema = z.enum(["bullish", "neutral", "bearish"]);
 export type Sentiment = z.infer<typeof SentimentSchema>;

@@ -5,7 +5,7 @@ import {
   defaultLanguageFromBrowser,
   getLanguageEnglishName,
   isSupportedLanguage,
-} from "./languages.js";
+} from "./languages";
 
 describe("supported languages list", () => {
   it("has 13 entries with unique codes", () => {

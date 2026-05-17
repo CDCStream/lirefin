@@ -16,15 +16,15 @@ export type {
   CreditTransactionListResponse,
   AnalysisHistoryItem,
   AnalysisHistoryResponse,
-} from "./schemas.js";
+} from "./schemas";
 
-export type { SupportedLanguageCode } from "./languages.js";
-export type { Region } from "./regions.js";
+export type { SupportedLanguageCode } from "./languages";
+export type { Region } from "./regions";
 
 export interface ExtensionSettings {
-  portfolio: import("./schemas.js").Asset[];
-  outputLanguage: import("./languages.js").SupportedLanguageCode;
+  portfolio: import("./schemas").Asset[];
+  outputLanguage: import("./languages").SupportedLanguageCode;
   backendUrl: string;
   deviceId: string;
-  preferredRegion: import("./regions.js").Region;
+  preferredRegion: import("./regions").Region;
 }

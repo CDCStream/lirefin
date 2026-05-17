@@ -3,7 +3,7 @@ import {
   REGION_EXCHANGES,
   REGIONS,
   regionFromExchange,
-} from "./regions.js";
+} from "./regions";
 
 describe("regionFromExchange", () => {
   it("maps US exchange codes to 'us'", () => {

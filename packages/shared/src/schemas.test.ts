@@ -6,7 +6,7 @@ import {
   AssetSchema,
   SentimentSchema,
   TickerSearchQuerySchema,
-} from "./schemas.js";
+} from "./schemas";
 
 const validAsset = {
   symbol: "AAPL",
