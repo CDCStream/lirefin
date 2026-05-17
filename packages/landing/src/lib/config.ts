@@ -7,7 +7,7 @@ export const SITE = {
   supportEmail: "support@lirefin.com",
   legalEmail: "legal@lirefin.com",
   webStoreUrl:
-    "https://chromewebstore.google.com/detail/eipiafniahnjsmoodadcerfmaprclpjj",
+    "https://chromewebstore.google.com/detail/lirefin-%E2%80%94-ai-financial-ne/elpiafniahnjnmoodadceifmapnclpjj",
   github: "https://github.com/CDCStream/lirefin",
 } as const;
 
