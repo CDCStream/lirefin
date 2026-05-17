@@ -17,6 +17,7 @@ export const NAV_LINKS = [
   { href: "/#how-it-works", label: "How it works" },
   { href: "/#pricing", label: "Pricing" },
   { href: "/#faq", label: "FAQ" },
+  { href: "/blog", label: "Blog" },
 ] as const;
 
 export const FOOTER_LINKS = {
@@ -25,6 +26,7 @@ export const FOOTER_LINKS = {
     { href: "/#gallery", label: "Screenshots" },
     { href: "/#pricing", label: "Pricing" },
     { href: "/#faq", label: "FAQ" },
+    { href: "/blog", label: "Blog" },
   ],
   legal: [
     { href: "/privacy", label: "Privacy Policy" },
